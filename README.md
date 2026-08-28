@@ -1,6 +1,6 @@
 # GuardianLens
 
-GuardianLens is an Android-based, AI-assisted child online-safety prototype. It periodically analyses visible screen content within selected applications and displays a warning when potentially inappropriate visual content is detected.
+GuardianLens is an Android-based, AI-assisted child online-safety project. It periodically analyses visible screen content within selected applications and displays a warning when potentially inappropriate visual content is detected.
 
 The system consists of:
 
@@ -55,7 +55,6 @@ The backend will provide:
 - Python and Django
 - Django REST Framework
 - SQLite during initial development
-- PostgreSQL for later deployment
 - Google Cloud Vision SafeSearch
 - JSON Web Tokens for API authentication
 - Git and GitHub for version control
@@ -125,12 +124,6 @@ The backend will be available at:
 
 ```text
 http://127.0.0.1:8000/
-```
-
-Django Admin will be available at:
-
-```text
-http://127.0.0.1:8000/admin/
 ```
 
 ## Parent Application Setup
