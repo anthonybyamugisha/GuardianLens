@@ -23,13 +23,19 @@ class WelcomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/guardianlens_logo.png',
-                  width: 208,
-                  height: 208,
-                  fit: BoxFit.contain,
+                Flexible(
+                  flex: 1,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Image.asset(
+                      'assets/images/guardianlens_logo.png',
+                      width: 208,
+                      height: 208,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
                 RichText(
                   text: const TextSpan(
                     style: TextStyle(

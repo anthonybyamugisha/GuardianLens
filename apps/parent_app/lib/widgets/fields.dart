@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'theme.dart';
+import '../theme.dart';
 
 class GLField extends StatelessWidget {
   const GLField({

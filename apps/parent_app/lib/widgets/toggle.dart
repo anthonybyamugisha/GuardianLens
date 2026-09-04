@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'theme.dart';
+import '../theme.dart';
 
 class Toggle extends StatelessWidget {
   const Toggle({super.key, required this.on, required this.onChanged});

@@ -195,14 +195,12 @@ class _SettingsRow extends StatelessWidget {
     required this.title,
     this.detail,
     this.onTap,
-    this.danger = false,
   });
 
   final IconData icon;
   final String title;
   final String? detail;
   final VoidCallback? onTap;
-  final bool danger;
 
   @override
   Widget build(BuildContext context) {
@@ -215,14 +213,14 @@ class _SettingsRow extends StatelessWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
-                color: danger ? AppColors.redSurface : AppColors.paleBlueSurface,
+              decoration: const BoxDecoration(
+                color: AppColors.paleBlueSurface,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 15,
-                color: danger ? AppColors.dangerRedLight : AppColors.primaryBlueLight,
+                color: AppColors.primaryBlueLight,
               ),
             ),
             const SizedBox(width: 12),
@@ -232,10 +230,10 @@ class _SettingsRow extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: danger ? AppColors.dangerRedLight : AppColors.textPrimary,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   if (detail != null) ...[

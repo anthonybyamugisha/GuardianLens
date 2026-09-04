@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'theme.dart';
+import '../theme.dart';
 
 class BrandMark extends StatelessWidget {
   const BrandMark({super.key, this.size = 64, this.iconSize = 34});
@@ -22,7 +22,6 @@ class BrandMark extends StatelessWidget {
         Icons.shield_outlined,
         color: Colors.white,
         size: iconSize,
-        strokeWidth: 1.8,
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
-import '../widgets/toggle.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({
