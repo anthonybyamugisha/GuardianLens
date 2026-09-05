@@ -4,7 +4,7 @@ import '../theme.dart';
 import '../widgets/toggle.dart';
 
 class SettingsSubScreen extends StatelessWidget {
-  const SettingsSubScreen({
+  SettingsSubScreen({
     super.key,
     required this.title,
     required this.onBack,
@@ -19,26 +19,26 @@ class SettingsSubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 _BackButton(onTap: onBack),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.03,
-                    color: AppColors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             child,
           ],
         ),
@@ -48,7 +48,7 @@ class SettingsSubScreen extends StatelessWidget {
 }
 
 class SettingsDevicesScreen extends StatelessWidget {
-  const SettingsDevicesScreen({
+  SettingsDevicesScreen({
     super.key,
     required this.paired,
     required this.onAddDevice,
@@ -68,9 +68,9 @@ class SettingsDevicesScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.blueSurface,
+              color: context.colors.blueSurface,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -79,47 +79,47 @@ class SettingsDevicesScreen extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.colors.cardBackground,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 20),
+                  child: Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 20),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Alex\u2019s iPhone',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         paired ? 'Connected \u00b7 Synced just now' : 'Not connected',
                         style: TextStyle(
                           fontSize: 12,
-                          color: paired ? AppColors.successGreen : AppColors.textSecondary,
+                          color: paired ? AppColors.successGreen : context.colors.textSecondary,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.check_circle, size: 18, color: AppColors.successGreen),
+                Icon(Icons.check_circle, size: 18, color: AppColors.successGreen),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: onAddDevice,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryBlue,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
-            icon: const Icon(Icons.add, size: 17),
-            label: const Text('Add new device', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+            icon: Icon(Icons.add, size: 17),
+            label: Text('Add new device', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -128,7 +128,7 @@ class SettingsDevicesScreen extends StatelessWidget {
 }
 
 class SettingsToggleRow extends StatelessWidget {
-  const SettingsToggleRow({
+  SettingsToggleRow({
     super.key,
     required this.title,
     required this.detail,
@@ -144,10 +144,10 @@ class SettingsToggleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: AppColors.borderSubtle),
+        color: context.colors.cardBackground,
+        border: Border.all(color: context.colors.borderSubtle),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -158,17 +158,17 @@ class SettingsToggleRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   detail,
-                  style: const TextStyle(fontSize: 12, height: 1.6, color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 12, height: 1.6, color: context.colors.textSecondary),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Toggle(on: value, onChanged: onChanged),
         ],
       ),
@@ -177,7 +177,7 @@ class SettingsToggleRow extends StatelessWidget {
 }
 
 class NotificationSettingsScreen extends StatefulWidget {
-  const NotificationSettingsScreen({super.key, required this.onBack});
+  NotificationSettingsScreen({super.key, required this.onBack});
 
   final VoidCallback onBack;
 
@@ -197,7 +197,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: EdgeInsets.only(bottom: 12),
             child: SettingsToggleRow(
               title: 'Push notifications',
               detail: 'Real-time alerts for concerning activity',
@@ -218,7 +218,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
 }
 
 class PrivacySettingsScreen extends StatefulWidget {
-  const PrivacySettingsScreen({super.key, required this.onBack});
+  PrivacySettingsScreen({super.key, required this.onBack});
 
   final VoidCallback onBack;
 
@@ -239,63 +239,63 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: AppColors.borderSubtle),
+              color: context.colors.cardBackground,
+              border: Border.all(color: context.colors.borderSubtle),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
+                Text(
                   'Pause monitoring',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   'Temporarily stop monitoring all paired devices.',
-                  style: TextStyle(fontSize: 12, height: 1.6, color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 12, height: 1.6, color: context.colors.textSecondary),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => setState(() => _paused = !_paused),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _paused ? AppColors.softGreenSurface : AppColors.buttonGrey,
+                    backgroundColor: _paused ? context.colors.softGreenSurface : context.colors.buttonGrey,
                     foregroundColor: _paused ? AppColors.successGreen : AppColors.primaryBlue,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: EdgeInsets.symmetric(vertical: 12),
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: Text(
                     _paused ? 'Monitoring paused' : 'Pause monitoring',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.redCard,
-              border: Border.all(color: AppColors.redCardBorder),
+              color: context.colors.redCard,
+              border: Border.all(color: context.colors.redCardBorder),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
+                Text(
                   'Delete account',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.dangerRedLight),
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   'Permanently remove your account, devices, and history.',
-                  style: TextStyle(fontSize: 12, height: 1.6, color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 12, height: 1.6, color: context.colors.textSecondary),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 if (_confirmDelete)
                   Row(
                     children: [
@@ -303,27 +303,27 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                         child: OutlinedButton(
                           onPressed: () => setState(() => _confirmDelete = false),
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: AppColors.textSecondary,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            side: const BorderSide(color: AppColors.borderInput),
+                            backgroundColor: context.colors.cardBackground,
+                            foregroundColor: context.colors.textSecondary,
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            side: BorderSide(color: context.colors.borderInput),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: const Text('Cancel', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                          child: Text('Cancel', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.dangerRedLight,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.symmetric(vertical: 10),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             elevation: 0,
                           ),
-                          child: const Text('Delete permanently', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                          child: Text('Delete permanently', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                         ),
                       ),
                     ],
@@ -332,13 +332,13 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                   ElevatedButton(
                     onPressed: () => setState(() => _confirmDelete = true),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.redSurface,
+                      backgroundColor: context.colors.redSurface,
                       foregroundColor: AppColors.dangerRedLight,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text('Delete account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                    child: Text('Delete account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
                   ),
               ],
             ),
@@ -350,7 +350,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
+  _BackButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -359,10 +359,10 @@ class _BackButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
-      child: const SizedBox(
+      child: SizedBox(
         width: 36,
         height: 36,
-        child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
     );
   }

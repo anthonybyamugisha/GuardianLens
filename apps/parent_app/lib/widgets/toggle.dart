@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 class Toggle extends StatelessWidget {
-  const Toggle({super.key, required this.on, required this.onChanged});
+  Toggle({super.key, required this.on, required this.onChanged});
 
   final bool on;
   final VoidCallback onChanged;
@@ -13,21 +13,21 @@ class Toggle extends StatelessWidget {
     return GestureDetector(
       onTap: onChanged,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 200),
         width: 44,
         height: 24,
-        padding: const EdgeInsets.all(2),
+        padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color: on ? AppColors.successGreen : AppColors.toggleOff,
+          color: on ? AppColors.successGreen : context.colors.toggleOff,
           borderRadius: BorderRadius.circular(999),
         ),
         child: AnimatedAlign(
-          duration: const Duration(milliseconds: 200),
+          duration: Duration(milliseconds: 200),
           alignment: on ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             width: 20,
             height: 20,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [

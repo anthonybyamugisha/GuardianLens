@@ -5,7 +5,7 @@ import '../theme.dart';
 import '../widgets/toggle.dart';
 
 class AppDetailScreen extends StatefulWidget {
-  const AppDetailScreen({
+  AppDetailScreen({
     super.key,
     required this.app,
     required this.onChange,
@@ -35,7 +35,7 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
   void _handleSave() {
     widget.onChange(widget.app.copyWith(sensitivity: _sensitivity, enabled: _enabled));
     setState(() => _saved = true);
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 2), () {
       if (mounted) setState(() => _saved = false);
     });
   }
@@ -44,30 +44,30 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 _BackButton(onTap: widget.onBack),
-                const SizedBox(width: 12),
-                const Text(
+                SizedBox(width: 12),
+                Text(
                   'App settings',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.03,
-                    color: AppColors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceFill,
+                color: context.colors.surfaceFill,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -76,35 +76,35 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colors.cardBackground,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(widget.app.icon, size: 24, color: widget.app.accentColor),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.app.name,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         widget.app.description,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: AppColors.borderSubtle),
+                color: context.colors.cardBackground,
+                border: Border.all(color: context.colors.borderSubtle),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -113,14 +113,14 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Monitor this app',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
+                        SizedBox(height: 4),
+                        Text(
                           'When on, GuardianLens watches for risky content.',
-                          style: TextStyle(fontSize: 12, color: AppColors.textFaint),
+                          style: TextStyle(fontSize: 12, color: context.colors.textFaint),
                         ),
                       ],
                     ),
@@ -129,42 +129,42 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.blueSurface,
+                color: context.colors.blueSurface,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
                       Icon(Icons.tune, size: 16, color: AppColors.primaryBlueLight),
                       SizedBox(width: 8),
                       Text(
                         'Sensitivity override',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     _sensitivity.description,
-                    style: const TextStyle(fontSize: 12, height: 1.6, color: AppColors.textSecondary),
+                    style: TextStyle(fontSize: 12, height: 1.6, color: context.colors.textSecondary),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Row(
                     children: Sensitivity.values.map((level) {
                       final selected = _sensitivity == level;
                       return Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 4),
+                          padding: EdgeInsets.only(right: 4),
                           child: GestureDetector(
                             onTap: () => setState(() => _sensitivity = level),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              padding: EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
                                 color: selected ? AppColors.primaryBlue : Colors.white,
                                 borderRadius: BorderRadius.circular(8),
@@ -175,7 +175,7 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
-                                  color: selected ? Colors.white : AppColors.textSecondary,
+                                  color: selected ? Colors.white : context.colors.textSecondary,
                                 ),
                               ),
                             ),
@@ -184,23 +184,23 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Text(
                     'This overrides the global sensitivity for ${widget.app.name} only.',
-                    style: const TextStyle(fontSize: 11, color: AppColors.textFaint),
+                    style: TextStyle(fontSize: 11, color: context.colors.textFaint),
                   ),
                 ],
               ),
             ),
-            const Spacer(),
+            Spacer(),
             if (_saved)
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
-                  color: AppColors.softGreenSurface,
+                  color: context.colors.softGreenSurface,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.check, size: 18, color: AppColors.successGreen),
@@ -218,12 +218,12 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   elevation: 0,
                   shadowColor: AppColors.primaryBlue,
                 ),
-                child: const Text('Save changes', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                child: Text('Save changes', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
               ),
           ],
         ),
@@ -233,7 +233,7 @@ class _AppDetailScreenState extends State<AppDetailScreen> {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
+  _BackButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -242,10 +242,10 @@ class _BackButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
-      child: const SizedBox(
+      child: SizedBox(
         width: 36,
         height: 36,
-        child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
     );
   }

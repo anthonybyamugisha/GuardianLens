@@ -27,10 +27,10 @@ extension SeverityColors on Severity {
         Severity.low => AppColors.primaryBlueLight,
       };
 
-  Color get background => switch (this) {
-        Severity.high => AppColors.paleRedSurface,
-        Severity.medium => AppColors.paleOrangeSurface,
-        Severity.low => AppColors.paleBlueSurface,
+  Color background(AppPalette palette) => switch (this) {
+        Severity.high => palette.paleRedSurface,
+        Severity.medium => palette.paleOrangeSurface,
+        Severity.low => palette.paleBlueSurface,
       };
 }
 
@@ -132,7 +132,7 @@ List<MonitoredApp> initialApps() => const [
         description: 'Short-form video platform',
         enabled: true,
         sensitivity: Sensitivity.balanced,
-        accentColor: AppColors.textPrimary,
+        accentColor: AppColors.purpleAccent,
         icon: Icons.music_note,
       ),
       MonitoredApp(
@@ -192,7 +192,7 @@ List<AlertItem> initialAlerts() => const [
         time: 'Yesterday, 8:30 PM',
         severity: Severity.low,
         icon: Icons.public,
-        accentColor: AppColors.textFaint,
+        accentColor: AppColors.primaryBlueLight,
       ),
     ];
 

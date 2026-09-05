@@ -5,7 +5,7 @@ import '../theme.dart';
 import 'alerts_screen.dart' show SeverityBadge;
 
 class AlertDetailScreen extends StatefulWidget {
-  const AlertDetailScreen({
+  AlertDetailScreen({
     super.key,
     required this.alert,
     required this.onBack,
@@ -26,30 +26,30 @@ class _AlertDetailScreenState extends State<AlertDetailScreen> {
     final alert = widget.alert;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 _BackButton(onTap: widget.onBack),
-                const SizedBox(width: 12),
-                const Text(
+                SizedBox(width: 12),
+                Text(
                   'Alert details',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.03,
-                    color: AppColors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceFill,
+                color: context.colors.surfaceFill,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -58,35 +58,35 @@ class _AlertDetailScreenState extends State<AlertDetailScreen> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colors.cardBackground,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(alert.icon, size: 24, color: alert.accentColor),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         alert.app,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         alert.time,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: AppColors.borderSubtle),
+                color: context.colors.cardBackground,
+                border: Border.all(color: context.colors.borderSubtle),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -95,66 +95,66 @@ class _AlertDetailScreenState extends State<AlertDetailScreen> {
                   Row(
                     children: [
                       Icon(Icons.warning_amber, size: 17, color: alert.accentColor),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           alert.title,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Text(
                     alert.detail,
-                    style: const TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+                    style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   Row(
                     children: [
                       SeverityBadge(severity: alert.severity),
-                      const SizedBox(width: 8),
-                      const Text(
+                      SizedBox(width: 8),
+                      Text(
                         'Detected automatically',
-                        style: TextStyle(fontSize: 11, color: AppColors.textFaint),
+                        style: TextStyle(fontSize: 11, color: context.colors.textFaint),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.blueSurface,
+                color: context.colors.blueSurface,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Recommended actions',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   _ActionRow(icon: Icons.chat_bubble_outline, text: 'Talk with Alex about what they saw'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   _ActionRow(icon: Icons.tune, text: 'Review ${alert.app} monitoring sensitivity'),
-                  const SizedBox(height: 12),
-                  const _ActionRow(icon: Icons.shield_outlined, text: 'Block similar content automatically'),
+                  SizedBox(height: 12),
+                  _ActionRow(icon: Icons.shield_outlined, text: 'Block similar content automatically'),
                 ],
               ),
             ),
-            const Spacer(),
+            Spacer(),
             if (_resolved)
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
-                  color: AppColors.softGreenSurface,
+                  color: context.colors.softGreenSurface,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.check, size: 18, color: AppColors.successGreen),
@@ -172,22 +172,22 @@ class _AlertDetailScreenState extends State<AlertDetailScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   elevation: 0,
                 ),
-                child: const Text('Talk to Alex', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                child: Text('Talk to Alex', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               OutlinedButton(
                 onPressed: () => setState(() => _resolved = true),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: const BorderSide(color: AppColors.borderInput),
+                  foregroundColor: context.colors.textSecondary,
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  side: BorderSide(color: context.colors.borderInput),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Mark as resolved', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                child: Text('Mark as resolved', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               ),
             ],
           ],
@@ -198,7 +198,7 @@ class _AlertDetailScreenState extends State<AlertDetailScreen> {
 }
 
 class _ActionRow extends StatelessWidget {
-  const _ActionRow({required this.icon, required this.text});
+  _ActionRow({required this.icon, required this.text});
 
   final IconData icon;
   final String text;
@@ -210,17 +210,17 @@ class _ActionRow extends StatelessWidget {
         Container(
           width: 28,
           height: 28,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: context.colors.cardBackground,
             shape: BoxShape.circle,
           ),
           child: Icon(icon, size: 15, color: AppColors.primaryBlueLight),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
           ),
         ),
       ],
@@ -229,7 +229,7 @@ class _ActionRow extends StatelessWidget {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
+  _BackButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -238,10 +238,10 @@ class _BackButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
-      child: const SizedBox(
+      child: SizedBox(
         width: 36,
         height: 36,
-        child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
     );
   }

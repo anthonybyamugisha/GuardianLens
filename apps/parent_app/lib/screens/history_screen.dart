@@ -4,7 +4,7 @@ import '../models.dart';
 import '../theme.dart';
 
 class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({
+  HistoryScreen({
     super.key,
     required this.history,
     required this.onSelectAlert,
@@ -61,17 +61,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
                 _BackButton(onTap: widget.onBack),
-                const SizedBox(width: 12),
-                const Column(
+                SizedBox(width: 12),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'GuardianLens',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                     ),
                     SizedBox(height: 2),
                     Text(
@@ -80,7 +80,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         fontSize: 26,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.04,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ],
@@ -88,56 +88,56 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Container(
               height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: AppColors.borderInput),
+                color: context.colors.cardBackground,
+                border: Border.all(color: context.colors.borderInput),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, size: 16, color: AppColors.textFaint),
-                  const SizedBox(width: 8),
+                  Icon(Icons.search, size: 16, color: context.colors.textFaint),
+                  SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
                       onChanged: (_) => setState(() {}),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         isCollapsed: true,
                         hintText: 'Search events...',
-                        hintStyle: TextStyle(color: AppColors.textPlaceholder, fontSize: 14),
+                        hintStyle: TextStyle(color: context.colors.textPlaceholder, fontSize: 14),
                         border: InputBorder.none,
                       ),
-                      style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 14, color: context.colors.textPrimary),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           SizedBox(
             height: 32,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               itemCount: _filters.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final cat = _filters[index];
                 final selected = _filter == cat;
                 return GestureDetector(
                   onTap: () => setState(() => _filter = cat),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    padding: EdgeInsets.symmetric(horizontal: 14),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: selected ? AppColors.primaryBlue : AppColors.surfaceFill,
+                      color: selected ? AppColors.primaryBlue : context.colors.surfaceFill,
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -145,7 +145,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: selected ? Colors.white : AppColors.textSecondary,
+                        color: selected ? Colors.white : context.colors.textSecondary,
                       ),
                     ),
                   ),
@@ -153,34 +153,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               children: _grouped.entries.map((entry) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       entry.key.toUpperCase(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.8,
-                        color: AppColors.textFaint,
+                        color: context.colors.textFaint,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     ...entry.value.map(
                       (item) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: EdgeInsets.only(bottom: 10),
                         child: _HistoryItem(item: item, onTap: () {
                           final alertId = item.alertId;
                           if (alertId != null) widget.onSelectAlert(alertId);
                         }),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                   ],
                 );
               }).toList(),
@@ -193,7 +193,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 }
 
 class _HistoryItem extends StatelessWidget {
-  const _HistoryItem({required this.item, required this.onTap});
+  _HistoryItem({required this.item, required this.onTap});
 
   final HistoryEntry item;
   final VoidCallback onTap;
@@ -205,10 +205,10 @@ class _HistoryItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: AppColors.borderSubtle),
+          color: context.colors.cardBackground,
+          border: Border.all(color: context.colors.borderSubtle),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -218,12 +218,12 @@ class _HistoryItem extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.surfaceFill,
+                color: context.colors.surfaceFill,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(item.icon, size: 18, color: item.accentColor),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,32 +233,32 @@ class _HistoryItem extends StatelessWidget {
                       Expanded(
                         child: Text(
                           item.app,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                         ),
                       ),
                       Text(
                         item.time,
-                        style: const TextStyle(fontSize: 10, color: AppColors.textFaint),
+                        style: TextStyle(fontSize: 10, color: context.colors.textFaint),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     item.event,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     item.detail,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                    style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   _CategoryBadge(category: item.category),
                 ],
               ),
@@ -271,7 +271,7 @@ class _HistoryItem extends StatelessWidget {
 }
 
 class _CategoryBadge extends StatelessWidget {
-  const _CategoryBadge({required this.category});
+  _CategoryBadge({required this.category});
 
   final HistoryCategory category;
 
@@ -279,9 +279,9 @@ class _CategoryBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAlert = category == HistoryCategory.alert;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: isAlert ? AppColors.paleRedSurface : AppColors.paleGreenSurface,
+        color: isAlert ? context.colors.paleRedSurface : context.colors.paleGreenSurface,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -297,7 +297,7 @@ class _CategoryBadge extends StatelessWidget {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
+  _BackButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -306,10 +306,10 @@ class _BackButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
-      child: const SizedBox(
+      child: SizedBox(
         width: 36,
         height: 36,
-        child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
     );
   }

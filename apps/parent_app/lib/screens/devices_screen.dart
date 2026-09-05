@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 class DevicesScreen extends StatelessWidget {
-  const DevicesScreen({
+  DevicesScreen({
     super.key,
     required this.paired,
     required this.onAddDevice,
@@ -20,7 +20,7 @@ class DevicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        padding: EdgeInsets.fromLTRB(24, 20, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -29,10 +29,10 @@ class DevicesScreen extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'GuardianLens',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                     ),
                     SizedBox(height: 4),
                     Text(
@@ -41,7 +41,7 @@ class DevicesScreen extends StatelessWidget {
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.04,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ],
@@ -49,21 +49,21 @@ class DevicesScreen extends StatelessWidget {
                 TextButton(
                   onPressed: onBack,
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary,
+                    foregroundColor: context.colors.textSecondary,
                     padding: EdgeInsets.zero,
-                    minimumSize: const Size(0, 0),
+                    minimumSize: Size(0, 0),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: const Text('Sign out', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                  child: Text('Sign out', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                 ),
               ],
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.blueSurface,
-                border: Border.all(color: AppColors.blueSurfaceBorder),
+                color: context.colors.blueSurface,
+                border: Border.all(color: context.colors.blueSurfaceBorder),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -75,21 +75,21 @@ class DevicesScreen extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.colors.cardBackground,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 22),
+                        child: Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 22),
                       ),
-                      const Spacer(),
+                      Spacer(),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.softGreenSurface,
+                          color: context.colors.softGreenSurface,
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
                           paired ? '1 connected' : 'No devices',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: AppColors.successGreen,
@@ -98,28 +98,28 @@ class DevicesScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Text(
                     paired ? 'Alex\u2019s phone' : 'Connect a child device',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     paired
                         ? 'Monitoring is active and running quietly.'
                         : 'Pair a device to start seeing safety alerts here.',
-                    style: const TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+                    style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
                   ),
                 ],
               ),
             ),
             if (paired) ...[
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: AppColors.calloutBorder),
+                  color: context.colors.cardBackground,
+                  border: Border.all(color: context.colors.calloutBorder),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -128,23 +128,23 @@ class DevicesScreen extends StatelessWidget {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.softGreenSurface,
+                        color: context.colors.softGreenSurface,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.check_circle_outline, color: AppColors.successGreen, size: 18),
+                      child: Icon(Icons.check_circle_outline, color: AppColors.successGreen, size: 18),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           'Alex\u2019s phone',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                         ),
                         SizedBox(height: 4),
                         Text(
                           'Connected just now',
-                          style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                          style: TextStyle(fontSize: 12, color: context.colors.textMuted),
                         ),
                       ],
                     ),
@@ -152,19 +152,19 @@ class DevicesScreen extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: onDashboard,
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.colors.cardBackground,
                   foregroundColor: AppColors.primaryBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  side: const BorderSide(color: AppColors.blueChipBorder),
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  side: BorderSide(color: context.colors.blueChipBorder),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.dashboard_outlined, size: 17),
@@ -174,7 +174,7 @@ class DevicesScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const Spacer(),
+            Spacer(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -182,19 +182,19 @@ class DevicesScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   elevation: 0,
                 ),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Add a child device', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                icon: Icon(Icons.add, size: 18),
+                label: Text('Add a child device', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               'You can connect more than one device.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+              style: TextStyle(fontSize: 11, color: context.colors.textMuted),
             ),
           ],
         ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../theme.dart';
 import '../widgets/fields.dart';
@@ -19,10 +19,14 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool _agreed = false;
+  bool _loading = false;
+  String? _error;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+
+  static final _emailRegExp = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
   @override
   void dispose() {
@@ -33,14 +37,46 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _submit() {
-    if (_agreed) widget.onSubmit();
+  Future<void> _submit() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
+
+    if (name.isEmpty) {
+      setState(() => _error = 'Please enter your full name.');
+      return;
+    }
+    if (!_emailRegExp.hasMatch(email)) {
+      setState(() => _error = 'Please enter a valid email address.');
+      return;
+    }
+    if (password.length < 8) {
+      setState(() => _error = 'Password must be at least 8 characters.');
+      return;
+    }
+    if (password != confirm) {
+      setState(() => _error = 'Passwords do not match.');
+      return;
+    }
+    if (!_agreed) {
+      setState(() => _error = 'Please accept the Terms of Service and Privacy Policy.');
+      return;
+    }
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    await Future.delayed(const Duration(milliseconds: 1400));
+    if (!mounted) return;
+    setState(() => _loading = false);
+    widget.onSubmit();
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
+      padding: EdgeInsets.symmetric(horizontal: 28, vertical: 48),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -50,31 +86,31 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 48,
             fit: BoxFit.contain,
           ),
-          const SizedBox(height: 28),
-          const Text(
+          SizedBox(height: 28),
+          Text(
             'Create Account',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.045,
-              color: AppColors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             'Join GuardianLens to keep your child\u2019s digital world safe.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
           ),
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
           GLField(
             label: 'Full Name',
             icon: Icons.person_outline,
             placeholder: 'menhya joshua',
             controller: _nameController,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           GLField(
             label: 'Email Address',
             icon: Icons.mail_outline,
@@ -82,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
             placeholder: 'menhyajoshua@gmail.com',
             controller: _emailController,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           GLField(
             label: 'Create Password',
             icon: Icons.key,
@@ -90,7 +126,7 @@ class _SignupScreenState extends State<SignupScreen> {
             placeholder: 'Password',
             controller: _passwordController,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           GLField(
             label: 'Confirm Password',
             icon: Icons.key,
@@ -98,13 +134,13 @@ class _SignupScreenState extends State<SignupScreen> {
             placeholder: 'Password',
             controller: _confirmController,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           GestureDetector(
             onTap: () => setState(() => _agreed = !_agreed),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.paleAmberSurface,
+                color: context.colors.paleAmberSurface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -113,21 +149,21 @@ class _SignupScreenState extends State<SignupScreen> {
                   Container(
                     width: 16,
                     height: 16,
-                    margin: const EdgeInsets.only(top: 1),
+                    margin: EdgeInsets.only(top: 1),
                     decoration: BoxDecoration(
-                      color: _agreed ? AppColors.primaryBlueLight : Colors.white,
-                      border: Border.all(color: _agreed ? AppColors.primaryBlueLight : AppColors.borderInput),
+                      color: _agreed ? AppColors.primaryBlueLight : context.colors.cardBackground,
+                      border: Border.all(color: _agreed ? AppColors.primaryBlueLight : context.colors.borderInput),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: _agreed
-                        ? const Icon(Icons.check, size: 11, color: Colors.white, weight: 800)
+                        ? Icon(Icons.check, size: 11, color: Colors.white, weight: 800)
                         : null,
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: Text.rich(
-                      const TextSpan(
-                        style: TextStyle(color: AppColors.textSecondary, fontSize: 11, height: 1.6),
+                      TextSpan(
+                        style: TextStyle(color: context.colors.textSecondary, fontSize: 11, height: 1.6),
                         children: [
                           TextSpan(text: 'I agree to the '),
                           TextSpan(
@@ -149,24 +185,28 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
           ),
+          if (_error != null) ...[
+            const SizedBox(height: 16),
+            ErrorBanner(message: _error!),
+          ],
           const SizedBox(height: 20),
           PrimaryButton(
             label: 'Create Account',
             icon: Icons.arrow_forward,
             onPressed: _submit,
-            disabled: !_agreed,
+            loading: _loading,
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Text.rich(
             TextSpan(
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 14),
               text: 'Already have an account? ',
               children: [
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: GestureDetector(
                     onTap: widget.onLogin,
-                    child: const Text(
+                    child: Text(
                       'Log in',
                       style: TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.w600),
                     ),

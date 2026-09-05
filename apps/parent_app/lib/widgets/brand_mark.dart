@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
 class BrandMark extends StatelessWidget {
-  const BrandMark({super.key, this.size = 64, this.iconSize = 34});
+  BrandMark({super.key, this.size = 64, this.iconSize = 34});
 
   final double size;
   final double iconSize;
@@ -16,7 +16,7 @@ class BrandMark extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primaryBlueLight,
         borderRadius: BorderRadius.circular(size * 0.3125),
-        boxShadow: const [AppShadows.brandMark],
+        boxShadow: [AppShadows.brandMark],
       ),
       child: Icon(
         Icons.shield_outlined,

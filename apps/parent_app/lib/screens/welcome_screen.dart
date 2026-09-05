@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../theme.dart';
 import '../widgets/fields.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({
+  WelcomeScreen({
     super.key,
     required this.onGetStarted,
     required this.onLogin,
@@ -16,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 80, 28, 32),
+      padding: EdgeInsets.fromLTRB(28, 80, 28, 32),
       child: Column(
         children: [
           Expanded(
@@ -35,14 +35,14 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.045,
-                      color: AppColors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                     children: [
                       TextSpan(text: 'Guardian'),
@@ -50,14 +50,14 @@ class WelcomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: 8),
+                Text(
                   'Protecting their digital journey with care.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
                     height: 1.6,
-                    color: AppColors.textSecondary,
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],
@@ -68,18 +68,18 @@ class WelcomeScreen extends StatelessWidget {
             icon: Icons.arrow_forward,
             onPressed: onGetStarted,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: TextButton(
               onPressed: onLogin,
               style: TextButton.styleFrom(
-                backgroundColor: AppColors.buttonGrey,
+                backgroundColor: context.colors.buttonGrey,
                 foregroundColor: AppColors.primaryBlue,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Log In', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              child: Text('Log In', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             ),
           ),
         ],

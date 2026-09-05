@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../theme.dart';
 import '../widgets/fields.dart';
 
 class PairingSuccessScreen extends StatelessWidget {
-  const PairingSuccessScreen({super.key, required this.onDashboard});
+  PairingSuccessScreen({super.key, required this.onDashboard});
 
   final VoidCallback onDashboard;
 
@@ -12,46 +12,46 @@ class PairingSuccessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(28, 72, 28, 32),
+        padding: EdgeInsets.fromLTRB(28, 72, 28, 32),
         child: Column(
           children: [
-            const SizedBox(height: 56),
+            SizedBox(height: 56),
             Container(
               width: 64,
               height: 64,
-              decoration: const BoxDecoration(
-                color: AppColors.softGreenSurface,
+              decoration: BoxDecoration(
+                color: context.colors.softGreenSurface,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_circle, color: AppColors.successGreen, size: 34),
+              child: Icon(Icons.check_circle, color: AppColors.successGreen, size: 34),
             ),
-            const SizedBox(height: 28),
-            const Text(
+            SizedBox(height: 28),
+            Text(
               'Devices connected!',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.04,
-                color: AppColors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
-            const SizedBox(height: 12),
-            const Text(
+            SizedBox(height: 12),
+            Text(
               'Alex\u2019s phone is now linked to your dashboard. Monitoring is active and quiet.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+              style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
             ),
-            const Spacer(),
+            Spacer(),
             PrimaryButton(
               label: 'Go to dashboard',
               icon: Icons.arrow_forward,
               onPressed: onDashboard,
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               'Privacy settings are on by default',
-              style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+              style: TextStyle(fontSize: 11, color: context.colors.textMuted),
             ),
           ],
         ),
@@ -61,7 +61,7 @@ class PairingSuccessScreen extends StatelessWidget {
 }
 
 class PairingFailedScreen extends StatelessWidget {
-  const PairingFailedScreen({
+  PairingFailedScreen({
     super.key,
     required this.onTryAgain,
     required this.onDevices,
@@ -74,54 +74,54 @@ class PairingFailedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(28, 72, 28, 32),
+        padding: EdgeInsets.fromLTRB(28, 72, 28, 32),
         child: Column(
           children: [
-            const SizedBox(height: 56),
+            SizedBox(height: 56),
             Container(
               width: 64,
               height: 64,
-              decoration: const BoxDecoration(
-                color: AppColors.redSurface,
+              decoration: BoxDecoration(
+                color: context.colors.redSurface,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.cancel, color: AppColors.dangerRedLight, size: 34),
+              child: Icon(Icons.cancel, color: AppColors.dangerRedLight, size: 34),
             ),
-            const SizedBox(height: 28),
-            const Text(
+            SizedBox(height: 28),
+            Text(
               'Pairing didn\u2019t finish',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.04,
-                color: AppColors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
-            const SizedBox(height: 12),
-            const Text(
+            SizedBox(height: 12),
+            Text(
               'This code has expired or wasn\u2019t recognized. Generate a new one and try again.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+              style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
             ),
-            const Spacer(),
+            Spacer(),
             PrimaryButton(
               label: 'Try again',
               icon: Icons.refresh,
               onPressed: onTryAgain,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
               child: TextButton(
                 onPressed: onDevices,
                 style: TextButton.styleFrom(
-                  backgroundColor: AppColors.buttonGrey,
+                  backgroundColor: context.colors.buttonGrey,
                   foregroundColor: AppColors.primaryBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Back to devices', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                child: Text('Back to devices', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               ),
             ),
           ],

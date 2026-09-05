@@ -5,7 +5,7 @@ import '../theme.dart';
 import '../widgets/toggle.dart';
 
 class MonitoringScreen extends StatefulWidget {
-  const MonitoringScreen({
+  MonitoringScreen({
     super.key,
     required this.apps,
     required this.onAppsChange,
@@ -54,7 +54,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             : _newAppDescController.text.trim(),
         enabled: true,
         sensitivity: Sensitivity.balanced,
-        accentColor: AppColors.textPrimary,
+        accentColor: context.colors.textPrimary,
         icon: Icons.apps,
       ),
     ]);
@@ -76,17 +76,17 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
                 _BackButton(onTap: widget.onBack),
-                const SizedBox(width: 12),
-                const Column(
+                SizedBox(width: 12),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'GuardianLens',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                     ),
                     SizedBox(height: 2),
                     Text(
@@ -95,7 +95,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                         fontSize: 26,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.04,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ],
@@ -103,68 +103,68 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Container(
               height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: AppColors.borderInput),
+                color: context.colors.cardBackground,
+                border: Border.all(color: context.colors.borderInput),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, size: 16, color: AppColors.textFaint),
-                  const SizedBox(width: 8),
+                  Icon(Icons.search, size: 16, color: context.colors.textFaint),
+                  SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
                       onChanged: (_) => setState(() {}),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         isCollapsed: true,
                         hintText: 'Search apps...',
-                        hintStyle: TextStyle(color: AppColors.textPlaceholder, fontSize: 14),
+                        hintStyle: TextStyle(color: context.colors.textPlaceholder, fontSize: 14),
                         border: InputBorder.none,
                       ),
-                      style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 14, color: context.colors.textPrimary),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                const Text(
+                Text(
                   'Monitored apps',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                 ),
-                const Spacer(),
+                Spacer(),
                 Text(
                   '$activeCount of ${widget.apps.length} active',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               itemCount: filtered.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 10),
+              separatorBuilder: (_, _) => SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final app = filtered[index];
                 return Container(
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: AppColors.borderSubtle),
+                    color: context.colors.cardBackground,
+                    border: Border.all(color: context.colors.borderSubtle),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -176,13 +176,13 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceFill,
+                            color: context.colors.surfaceFill,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(app.icon, size: 18, color: app.accentColor),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                         child: InkWell(
                           onTap: () => widget.onSelectApp(app.name),
@@ -192,22 +192,22 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                             children: [
                               Text(
                                 app.name,
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                               ),
-                              const SizedBox(height: 2),
+                              SizedBox(height: 2),
                               Text(
                                 app.description,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12, color: AppColors.textFaint),
+                                style: TextStyle(fontSize: 12, color: context.colors.textFaint),
                               ),
                             ],
                           ),
                         ),
                       ),
                       Toggle(on: app.enabled, onChanged: () => _toggleApp(app.name)),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.chevron_right, size: 16, color: AppColors.textPlaceholder),
+                      SizedBox(width: 8),
+                      Icon(Icons.chevron_right, size: 16, color: context.colors.textPlaceholder),
                     ],
                   ),
                 );
@@ -216,43 +216,43 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
           ),
           if (_showAdd)
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 4),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: AppColors.borderInput),
+                  color: context.colors.cardBackground,
+                  border: Border.all(color: context.colors.borderInput),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     _InlineInput(controller: _newAppNameController, hint: 'App name'),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     _InlineInput(controller: _newAppDescController, hint: 'Description (optional)'),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => setState(() => _showAdd = false),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.textSecondary,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              foregroundColor: context.colors.textSecondary,
+                              padding: EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: const Text('Cancel', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                            child: Text('Cancel', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: _addApp,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primaryBlue,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: EdgeInsets.symmetric(vertical: 12),
                               elevation: 0,
                             ),
-                            child: const Text('Add app', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                            child: Text('Add app', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                           ),
                         ),
                       ],
@@ -262,18 +262,18 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+            padding: EdgeInsets.fromLTRB(20, 12, 20, 8),
             child: ElevatedButton.icon(
               onPressed: () => setState(() => _showAdd = !_showAdd),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryBlue,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 elevation: 0,
               ),
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('Add app', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+              icon: Icon(Icons.add, size: 18),
+              label: Text('Add app', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
             ),
           ),
         ],
@@ -283,7 +283,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
 }
 
 class _InlineInput extends StatelessWidget {
-  const _InlineInput({required this.controller, required this.hint});
+  _InlineInput({required this.controller, required this.hint});
 
   final TextEditingController controller;
   final String hint;
@@ -292,10 +292,10 @@ class _InlineInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: AppColors.inputBackground,
-        border: Border.all(color: AppColors.borderInput),
+        color: context.colors.inputBackground,
+        border: Border.all(color: context.colors.borderInput),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
@@ -303,17 +303,17 @@ class _InlineInput extends StatelessWidget {
         decoration: InputDecoration(
           isCollapsed: true,
           hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.textPlaceholder, fontSize: 13),
+          hintStyle: TextStyle(color: context.colors.textPlaceholder, fontSize: 13),
           border: InputBorder.none,
         ),
-        style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+        style: TextStyle(fontSize: 13, color: context.colors.textPrimary),
       ),
     );
   }
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
+  _BackButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -325,8 +325,8 @@ class _BackButton extends StatelessWidget {
       child: Container(
         width: 36,
         height: 36,
-        decoration: const BoxDecoration(shape: BoxShape.circle),
-        child: const Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        decoration: BoxDecoration(shape: BoxShape.circle),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
     );
   }

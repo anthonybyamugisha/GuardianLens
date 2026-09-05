@@ -6,7 +6,7 @@ import '../theme.dart';
 import '../widgets/fields.dart';
 
 class PairingScreen extends StatefulWidget {
-  const PairingScreen({
+  PairingScreen({
     super.key,
     required this.onSuccess,
     required this.onExpired,
@@ -29,7 +29,7 @@ class _PairingScreenState extends State<PairingScreen> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (mounted && _seconds > 0) {
         setState(() => _seconds--);
       }
@@ -59,7 +59,7 @@ class _PairingScreenState extends State<PairingScreen> {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+        padding: EdgeInsets.fromLTRB(24, 40, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -68,38 +68,38 @@ class _PairingScreenState extends State<PairingScreen> {
               height: 56,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.paleBlueSurface,
+                color: context.colors.paleBlueSurface,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 27),
+              child: Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 27),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20),
+            Text(
               'Pair a new device',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.04,
-                color: AppColors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               'Use this code on your child\u2019s device to connect it securely.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+              style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.blueSurface,
+                color: context.colors.blueSurface,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'YOUR PAIRING CODE',
                     style: TextStyle(
                       fontSize: 10,
@@ -108,11 +108,11 @@ class _PairingScreenState extends State<PairingScreen> {
                       color: AppColors.primaryBlueLight,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colors.cardBackground,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -120,14 +120,14 @@ class _PairingScreenState extends State<PairingScreen> {
                       children: [
                         Text(
                           _code,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 27,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 3,
                             color: AppColors.primaryBlue,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12),
                         InkWell(
                           onTap: () {},
                           borderRadius: BorderRadius.circular(8),
@@ -135,21 +135,21 @@ class _PairingScreenState extends State<PairingScreen> {
                             width: 32,
                             height: 32,
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceFill,
+                              color: context.colors.surfaceFill,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.copy, size: 15, color: AppColors.textSecondary),
+                            child: Icon(Icons.copy, size: 15, color: context.colors.textSecondary),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.schedule, size: 14),
-                      const SizedBox(width: 4),
+                      Icon(Icons.schedule, size: 14),
+                      SizedBox(width: 4),
                       Text(
                         expired ? 'Code expired' : 'Expires in $minutes:$remaining',
                         style: TextStyle(
@@ -163,47 +163,47 @@ class _PairingScreenState extends State<PairingScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 32),
-            const Text(
+            SizedBox(height: 32),
+            Text(
               'How to connect',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
             ),
-            const SizedBox(height: 16),
-            const _Step(
+            SizedBox(height: 16),
+            _Step(
               number: '1',
               title: 'Open GuardianLens',
               text: 'Download and open the app on your child\u2019s phone.',
             ),
-            const SizedBox(height: 16),
-            const _Step(
+            SizedBox(height: 16),
+            _Step(
               number: '2',
               title: 'Enter the code',
               text: 'Type the code above when prompted on their device.',
             ),
-            const Spacer(),
+            Spacer(),
             PrimaryButton(
               label: 'Simulate device connected',
               icon: Icons.share_outlined,
               onPressed: widget.onSuccess,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             TextButton(
               onPressed: widget.onExpired,
               style: TextButton.styleFrom(foregroundColor: AppColors.dangerRedLight),
-              child: const Text('Test expired code', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+              child: Text('Test expired code', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: _generateNewCode,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primaryBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: const BorderSide(color: AppColors.blueChipBorder),
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  side: BorderSide(color: context.colors.blueChipBorder),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.refresh, size: 17),
@@ -221,7 +221,7 @@ class _PairingScreenState extends State<PairingScreen> {
 }
 
 class _Step extends StatelessWidget {
-  const _Step({required this.number, required this.title, required this.text});
+  _Step({required this.number, required this.title, required this.text});
 
   final String number;
   final String title;
@@ -236,28 +236,28 @@ class _Step extends StatelessWidget {
           width: 28,
           height: 28,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: AppColors.stepBlue,
+          decoration: BoxDecoration(
+            color: context.colors.stepBlue,
             shape: BoxShape.circle,
           ),
           child: Text(
             number,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primaryBlueLight),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primaryBlueLight),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
                 text,
-                style: const TextStyle(fontSize: 12, height: 1.6, color: AppColors.textSecondary),
+                style: TextStyle(fontSize: 12, height: 1.6, color: context.colors.textSecondary),
               ),
             ],
           ),

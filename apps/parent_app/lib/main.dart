@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import 'models.dart';
 import 'screens/alerts_screen.dart';
@@ -26,11 +26,16 @@ class GuardianLensApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GuardianLens',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      home: const AppRoot(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: AppThemeMode.notifier,
+      builder: (context, mode, _) => MaterialApp(
+        title: 'GuardianLens',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: mode,
+        home: const AppRoot(),
+      ),
     );
   }
 }
@@ -78,11 +83,20 @@ class _AppRootState extends State<AppRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pageBackground,
+      backgroundColor: context.colors.pageBackground,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final wide = constraints.maxWidth > 500;
-          Widget content = _buildScreen();
+          Widget content = AnimatedSwitcher(
+            duration: const Duration(milliseconds: 260),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: _screenTransition,
+            child: KeyedSubtree(
+              key: ValueKey(_screen),
+              child: _buildScreen(),
+            ),
+          );
           if (!wide) return content;
           return Center(
             child: Container(
@@ -91,7 +105,7 @@ class _AppRootState extends State<AppRoot> {
               margin: const EdgeInsets.symmetric(vertical: 24),
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: AppColors.cardBackground,
+                color: context.colors.cardBackground,
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: const [AppShadows.phoneFrame],
               ),
@@ -100,6 +114,23 @@ class _AppRootState extends State<AppRoot> {
           );
         },
       ),
+    );
+  }
+
+  Widget _screenTransition(Widget child, Animation<double> animation) {
+    final offset = Tween<Offset>(
+      begin: const Offset(0.05, 0.07),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      ),
+    );
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(position: offset, child: child),
     );
   }
 
@@ -268,10 +299,10 @@ class _SimpleBackShell extends StatelessWidget {
           child: InkWell(
             onTap: onBack,
             borderRadius: BorderRadius.circular(999),
-            child: const SizedBox(
+            child: SizedBox(
               width: 36,
               height: 36,
-              child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+              child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
             ),
           ),
         ),

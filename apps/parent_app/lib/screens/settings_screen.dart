@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({
+  SettingsScreen({
     super.key,
     required this.paired,
     required this.onDevices,
@@ -22,20 +22,20 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 _BackButton(onTap: onBack),
-                const SizedBox(width: 12),
-                const Column(
+                SizedBox(width: 12),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'GuardianLens',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                     ),
                     SizedBox(height: 2),
                     Text(
@@ -44,18 +44,18 @@ class SettingsScreen extends StatelessWidget {
                         fontSize: 26,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.04,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.blueSurface,
+                color: context.colors.blueSurface,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -63,25 +63,25 @@ class SettingsScreen extends StatelessWidget {
                   Container(
                     width: 44,
                     height: 44,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: AppColors.primaryBlue,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.person_outline, size: 20, color: Colors.white),
+                    child: Icon(Icons.person_outline, size: 20, color: Colors.white),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           'Menhya Joshua',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                         ),
                         SizedBox(height: 4),
                         Text(
                           'menhya.joshua@example.com',
-                          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                          style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
                         ),
                       ],
                     ),
@@ -119,6 +119,12 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
             _SettingsSection(
+              title: 'Appearance',
+              children: const [
+                _ThemeRow(),
+              ],
+            ),
+            _SettingsSection(
               title: 'Privacy & legal',
               children: [
                 _SettingsRow(
@@ -127,11 +133,11 @@ class SettingsScreen extends StatelessWidget {
                   detail: 'Manage data and monitoring',
                   onTap: onPrivacy,
                 ),
-                const _SettingsRow(
+                _SettingsRow(
                   icon: Icons.article_outlined,
                   title: 'Terms of Service',
                 ),
-                const _SettingsRow(
+                _SettingsRow(
                   icon: Icons.lock_outline,
                   title: 'Privacy Policy',
                 ),
@@ -145,7 +151,7 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _SettingsSection extends StatelessWidget {
-  const _SettingsSection({required this.title, required this.children});
+  _SettingsSection({required this.title, required this.children});
 
   final String title;
   final List<Widget> children;
@@ -153,31 +159,31 @@ class _SettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.only(top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title.toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
               color: AppColors.primaryBlueLight,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: AppColors.borderSubtle),
+              color: context.colors.cardBackground,
+              border: Border.all(color: context.colors.borderSubtle),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               children: [
                 for (var i = 0; i < children.length; i++) ...[
                   if (i > 0)
-                    const Divider(height: 1, color: AppColors.borderSubtle),
+                    Divider(height: 1, color: context.colors.borderSubtle),
                   children[i],
                 ],
               ],
@@ -190,7 +196,7 @@ class _SettingsSection extends StatelessWidget {
 }
 
 class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({
+  _SettingsRow({
     required this.icon,
     required this.title,
     this.detail,
@@ -207,14 +213,14 @@ class _SettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
             Container(
               width: 32,
               height: 32,
-              decoration: const BoxDecoration(
-                color: AppColors.paleBlueSurface,
+              decoration: BoxDecoration(
+                color: context.colors.paleBlueSurface,
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -223,33 +229,33 @@ class _SettingsRow extends StatelessWidget {
                 color: AppColors.primaryBlueLight,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   if (detail != null) ...[
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       detail!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 10, color: AppColors.textFaint),
+                      style: TextStyle(fontSize: 10, color: context.colors.textFaint),
                     ),
                   ],
                 ],
               ),
             ),
             if (onTap != null)
-              const Icon(Icons.chevron_right, size: 15, color: AppColors.chevronGrey),
+              Icon(Icons.chevron_right, size: 15, color: context.colors.chevronGrey),
           ],
         ),
       ),
@@ -267,11 +273,96 @@ class _BackButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
-      child: const SizedBox(
+      child: SizedBox(
         width: 36,
         height: 36,
-        child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
+    );
+  }
+}
+
+class _ThemeRow extends StatelessWidget {
+  const _ThemeRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: AppThemeMode.notifier,
+      builder: (context, mode, _) {
+        final detail = switch (mode) {
+          ThemeMode.system => 'Follows your device setting',
+          ThemeMode.light => 'Always light',
+          ThemeMode.dark => 'Always dark',
+        };
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: context.colors.paleBlueSurface,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+                      size: 15,
+                      color: AppColors.primaryBlueLight,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Theme',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: context.colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          detail,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 10, color: context.colors.textFaint),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: SegmentedButton<ThemeMode>(
+                  segments: const [
+                    ButtonSegment(value: ThemeMode.system, label: Text('System', style: TextStyle(fontSize: 11))),
+                    ButtonSegment(value: ThemeMode.light, label: Text('Light', style: TextStyle(fontSize: 11))),
+                    ButtonSegment(value: ThemeMode.dark, label: Text('Dark', style: TextStyle(fontSize: 11))),
+                  ],
+                  selected: {mode},
+                  showSelectedIcon: false,
+                  style: ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                    textStyle: const WidgetStatePropertyAll(TextStyle(fontSize: 11)),
+                    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8, horizontal: 10)),
+                  ),
+                  onSelectionChanged: (selection) => AppThemeMode.notifier.value = selection.first,
+                ),
+              ),
+            ],
+          ),
+);
+      },
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({
+  DashboardScreen({
     super.key,
     required this.paired,
     required this.onAddDevice,
@@ -26,7 +26,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+        padding: EdgeInsets.fromLTRB(20, 16, 20, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -35,10 +35,10 @@ class DashboardScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'GuardianLens',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                       ),
                       SizedBox(height: 4),
                       Text(
@@ -47,7 +47,7 @@ class DashboardScreen extends StatelessWidget {
                           fontSize: 26,
                           fontWeight: FontWeight.w600,
                           letterSpacing: -0.04,
-                          color: AppColors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ],
@@ -62,12 +62,12 @@ class DashboardScreen extends StatelessWidget {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceFill,
+                          color: context.colors.surfaceFill,
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: const Icon(Icons.notifications_none, size: 17, color: AppColors.textSecondary),
+                        child: Icon(Icons.notifications_none, size: 17, color: context.colors.textSecondary),
                       ),
-                      const Positioned(
+                      Positioned(
                         top: -2,
                         right: -2,
                         child: CircleAvatar(radius: 4, backgroundColor: AppColors.dangerRedLight),
@@ -75,27 +75,27 @@ class DashboardScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Container(
                   width: 36,
                   height: 36,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.primaryBlue,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.person_outline, size: 17, color: Colors.white),
+                  child: Icon(Icons.person_outline, size: 17, color: Colors.white),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Expanded(
-              child: paired ? const _DashboardData() : _DashboardEmpty(onAddDevice: onAddDevice),
+              child: paired ? _DashboardData() : _DashboardEmpty(onAddDevice: onAddDevice),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.only(top: 12),
-              decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.borderSubtle)),
+              padding: EdgeInsets.only(top: 12),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: context.colors.borderSubtle)),
               ),
               child: Row(
                 children: [
@@ -120,7 +120,7 @@ class DashboardScreen extends StatelessWidget {
 }
 
 class _DashboardNavItem extends StatelessWidget {
-  const _DashboardNavItem({
+  _DashboardNavItem({
     required this.icon,
     required this.label,
     this.active = false,
@@ -140,14 +140,14 @@ class _DashboardNavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 17, color: active ? AppColors.primaryBlue : AppColors.textFaint),
-            const SizedBox(height: 4),
+            Icon(icon, size: 17, color: active ? AppColors.primaryBlue : context.colors.textFaint),
+            SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
-                color: active ? AppColors.primaryBlue : AppColors.textFaint,
+                color: active ? AppColors.primaryBlue : context.colors.textFaint,
               ),
             ),
           ],
@@ -158,7 +158,7 @@ class _DashboardNavItem extends StatelessWidget {
 }
 
 class _DashboardEmpty extends StatelessWidget {
-  const _DashboardEmpty({required this.onAddDevice});
+  _DashboardEmpty({required this.onAddDevice});
 
   final VoidCallback onAddDevice;
 
@@ -172,39 +172,39 @@ class _DashboardEmpty extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.paleBlueSurface,
+              color: context.colors.paleBlueSurface,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(Icons.people_outline, color: AppColors.primaryBlueLight, size: 30),
+            child: Icon(Icons.people_outline, color: AppColors.primaryBlueLight, size: 30),
           ),
-          const SizedBox(height: 24),
-          const Text(
+          SizedBox(height: 24),
+          Text(
             'No devices yet',
             style: TextStyle(
               fontSize: 23,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.035,
-              color: AppColors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
-          const SizedBox(height: 12),
-          const Text(
+          SizedBox(height: 12),
+          Text(
             'Connect your child\u2019s device to see monitoring status and activity here.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.textSecondary),
+            style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
           ),
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
           ElevatedButton.icon(
             onPressed: onAddDevice,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryBlue,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
-            icon: const Icon(Icons.add, size: 17),
-            label: const Text('Add a child device', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+            icon: Icon(Icons.add, size: 17),
+            label: Text('Add a child device', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -213,7 +213,7 @@ class _DashboardEmpty extends StatelessWidget {
 }
 
 class _DashboardData extends StatelessWidget {
-  const _DashboardData();
+  _DashboardData();
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +221,7 @@ class _DashboardData extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: AppColors.primaryBlue,
             borderRadius: BorderRadius.circular(16),
@@ -234,7 +234,7 @@ class _DashboardData extends StatelessWidget {
                 child: Container(
                   width: 128,
                   height: 128,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Color(0x1AFFFFFF),
                     shape: BoxShape.circle,
                   ),
@@ -243,7 +243,7 @@ class _DashboardData extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
                       Expanded(
                         child: Column(
@@ -268,14 +268,14 @@ class _DashboardData extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colors.cardBackground,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Happy Monitoring Bro',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primaryBlue),
                     ),
@@ -285,14 +285,14 @@ class _DashboardData extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Row(
           children: [
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceFill,
+                  color: context.colors.surfaceFill,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -300,69 +300,69 @@ class _DashboardData extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.notifications_none, size: 17, color: AppColors.successGreen),
-                        const Spacer(),
+                        Icon(Icons.notifications_none, size: 17, color: AppColors.successGreen),
+                        Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.paleGreenBadge,
+                            color: context.colors.paleGreenBadge,
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: const Text(
+                          child: Text(
                             'Today',
                             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.successGreen),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
+                    SizedBox(height: 12),
+                    Text(
                       '0',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                     ),
-                    const Text(
+                    Text(
                       'New Alerts',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textPrimary),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Nothing flagged.',
-                      style: TextStyle(fontSize: 10, color: AppColors.textFaint),
+                      style: TextStyle(fontSize: 10, color: context.colors.textFaint),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceFill,
+                  color: context.colors.surfaceFill,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Icon(Icons.smartphone, size: 17, color: AppColors.primaryBlueLight),
                         Spacer(),
                         Text(
-                          '● Online',
+                          'â— Online',
                           style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.successGreen),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
+                    SizedBox(height: 12),
+                    Text(
                       'Alex\u2019s iPhone',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: 4),
+                    Text(
                       'Last synced: 2m ago',
-                      style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
+                      style: TextStyle(fontSize: 10, color: context.colors.textSecondary),
                     ),
                   ],
                 ),
@@ -370,23 +370,23 @@ class _DashboardData extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.cardBackground,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: const [AppShadows.card],
+            boxShadow: [AppShadows.card],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
                   Expanded(
                     child: Text(
                       'Activity Summary',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                     ),
                   ),
                   Text(
@@ -395,22 +395,22 @@ class _DashboardData extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              const _ActivityRow(
+              SizedBox(height: 16),
+              _ActivityRow(
                 icon: Icons.schedule,
                 title: 'Screen time update',
                 detail: '2h 15m used today. Well within limits.',
                 time: '10:30 AM',
               ),
-              const SizedBox(height: 12),
-              const _ActivityRow(
+              SizedBox(height: 12),
+              _ActivityRow(
                 icon: Icons.check_circle_outline,
                 title: 'Safety check complete',
                 detail: 'No risky content found in the last scan.',
                 time: '9:15 AM',
               ),
-              const SizedBox(height: 12),
-              const _ActivityRow(
+              SizedBox(height: 12),
+              _ActivityRow(
                 icon: Icons.visibility_outlined,
                 title: 'Content approval',
                 detail: 'Approved a YouTube video requested by Alex.',
@@ -425,7 +425,7 @@ class _DashboardData extends StatelessWidget {
 }
 
 class _ActivityRow extends StatelessWidget {
-  const _ActivityRow({
+  _ActivityRow({
     required this.icon,
     required this.title,
     required this.detail,
@@ -445,30 +445,30 @@ class _ActivityRow extends StatelessWidget {
         Container(
           width: 28,
           height: 28,
-          decoration: const BoxDecoration(
-            color: AppColors.paleBlueSurface,
+          decoration: BoxDecoration(
+            color: context.colors.paleBlueSurface,
             shape: BoxShape.circle,
           ),
           child: Icon(icon, size: 14, color: AppColors.primaryBlueLight),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
                 detail,
-                style: const TextStyle(fontSize: 10, height: 1.6, color: AppColors.textSecondary),
+                style: TextStyle(fontSize: 10, height: 1.6, color: context.colors.textSecondary),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
                 time,
-                style: const TextStyle(fontSize: 10, color: AppColors.textFaint),
+                style: TextStyle(fontSize: 10, color: context.colors.textFaint),
               ),
             ],
           ),

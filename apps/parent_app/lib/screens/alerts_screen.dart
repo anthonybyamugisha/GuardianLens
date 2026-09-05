@@ -4,7 +4,7 @@ import '../models.dart';
 import '../theme.dart';
 
 class AlertsScreen extends StatelessWidget {
-  const AlertsScreen({
+  AlertsScreen({
     super.key,
     required this.alerts,
     required this.onSelectAlert,
@@ -22,18 +22,18 @@ class AlertsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
                 _BackButton(onTap: onBack),
-                const SizedBox(width: 12),
-                const Expanded(
+                SizedBox(width: 12),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'GuardianLens',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textFaint),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: context.colors.textFaint),
                       ),
                       SizedBox(height: 2),
                       Text(
@@ -42,7 +42,7 @@ class AlertsScreen extends StatelessWidget {
                           fontSize: 26,
                           fontWeight: FontWeight.w600,
                           letterSpacing: -0.04,
-                          color: AppColors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ],
@@ -55,12 +55,12 @@ class AlertsScreen extends StatelessWidget {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceFill,
+                        color: context.colors.surfaceFill,
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: const Icon(Icons.notifications_none, size: 17, color: AppColors.textSecondary),
+                      child: Icon(Icons.notifications_none, size: 17, color: context.colors.textSecondary),
                     ),
-                    const Positioned(
+                    Positioned(
                       top: -2,
                       right: -2,
                       child: CircleAvatar(radius: 4, backgroundColor: AppColors.dangerRedLight),
@@ -70,12 +70,12 @@ class AlertsScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               itemCount: alerts.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 12),
+              separatorBuilder: (_, _) => SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final alert = alerts[index];
                 return _AlertCard(
@@ -92,7 +92,7 @@ class AlertsScreen extends StatelessWidget {
 }
 
 class _AlertCard extends StatelessWidget {
-  const _AlertCard({required this.alert, required this.onTap});
+  _AlertCard({required this.alert, required this.onTap});
 
   final AlertItem alert;
   final VoidCallback onTap;
@@ -103,10 +103,10 @@ class _AlertCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: AppColors.borderSubtle),
+          color: context.colors.cardBackground,
+          border: Border.all(color: context.colors.borderSubtle),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -116,12 +116,12 @@ class _AlertCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.surfaceFill,
+                color: context.colors.surfaceFill,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(alert.icon, size: 18, color: alert.accentColor),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,40 +131,40 @@ class _AlertCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           alert.app,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
                         ),
                       ),
                       Text(
                         alert.time,
-                        style: const TextStyle(fontSize: 10, color: AppColors.textFaint),
+                        style: TextStyle(fontSize: 10, color: context.colors.textFaint),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     alert.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     alert.detail,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                    style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   SeverityBadge(severity: alert.severity),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            const Padding(
+            SizedBox(width: 8),
+            Padding(
               padding: EdgeInsets.only(top: 4),
-              child: Icon(Icons.chevron_right, size: 16, color: AppColors.textPlaceholder),
+              child: Icon(Icons.chevron_right, size: 16, color: context.colors.textPlaceholder),
             ),
           ],
         ),
@@ -174,16 +174,16 @@ class _AlertCard extends StatelessWidget {
 }
 
 class SeverityBadge extends StatelessWidget {
-  const SeverityBadge({super.key, required this.severity});
+  SeverityBadge({super.key, required this.severity});
 
   final Severity severity;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: severity.background,
+        color: severity.background(context.colors),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -199,7 +199,7 @@ class SeverityBadge extends StatelessWidget {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
+  _BackButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -208,10 +208,10 @@ class _BackButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
-      child: const SizedBox(
+      child: SizedBox(
         width: 36,
         height: 36,
-        child: Icon(Icons.arrow_back, size: 20, color: AppColors.textSecondary),
+        child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
       ),
     );
   }
