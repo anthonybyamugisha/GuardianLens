@@ -1,122 +1,312 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+
+import 'models.dart';
+import 'screens/alerts_screen.dart';
+import 'screens/alert_detail_screen.dart';
+import 'screens/app_detail_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/devices_screen.dart';
+import 'screens/history_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/monitoring_screen.dart';
+import 'screens/pairing_result_screens.dart';
+import 'screens/pairing_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/settings_sub_screens.dart';
+import 'screens/signup_screen.dart';
+import 'screens/welcome_screen.dart';
+import 'theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const GuardianLensApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class GuardianLensApp extends StatelessWidget {
+  const GuardianLensApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: AppThemeMode.notifier,
+      builder: (context, mode, _) => MaterialApp(
+        title: 'GuardianLens',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: mode,
+        home: const AppRoot(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class AppRoot extends StatefulWidget {
+  const AppRoot({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<AppRoot> createState() => _AppRootState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+enum _Screen {
+  welcome,
+  login,
+  signup,
+  devices,
+  dashboard,
+  monitoring,
+  appDetail,
+  alerts,
+  alertDetail,
+  history,
+  settings,
+  settingsDevices,
+  settingsNotifications,
+  settingsPrivacy,
+  pairing,
+  pairingSuccess,
+  pairingFailed,
+}
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class _AppRootState extends State<AppRoot> {
+  _Screen _screen = _Screen.welcome;
+
+  bool _paired = false;
+  List<MonitoredApp> _apps = initialApps();
+  String _selectedAppName = 'YouTube';
+  String _selectedAlertId = 'youtube';
+
+  List<AlertItem> get _alerts => initialAlerts();
+  List<HistoryEntry> get _history => initialHistory();
+
+  void _go(_Screen screen) => setState(() => _screen = screen);
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      backgroundColor: context.colors.pageBackground,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final wide = constraints.maxWidth > 500;
+          Widget content = AnimatedSwitcher(
+            duration: const Duration(milliseconds: 260),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: _screenTransition,
+            child: KeyedSubtree(
+              key: ValueKey(_screen),
+              child: _buildScreen(),
             ),
-          ],
+          );
+          if (!wide) return content;
+          return Center(
+            child: Container(
+              width: 390,
+              height: constraints.maxHeight - 48,
+              margin: const EdgeInsets.symmetric(vertical: 24),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: context.colors.cardBackground,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: const [AppShadows.phoneFrame],
+              ),
+              child: content,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _screenTransition(Widget child, Animation<double> animation) {
+    final offset = Tween<Offset>(
+      begin: const Offset(0.05, 0.07),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      ),
+    );
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(position: offset, child: child),
+    );
+  }
+
+  Widget _buildScreen() {
+    switch (_screen) {
+      case _Screen.welcome:
+        return WelcomeScreen(
+          onGetStarted: () => _go(_Screen.signup),
+          onLogin: () => _go(_Screen.login),
+        );
+
+      case _Screen.login:
+        return _SimpleBackShell(
+          onBack: () => _go(_Screen.welcome),
+          child: LoginScreen(
+            onSubmit: () => _go(_Screen.devices),
+            onSignUp: () => _go(_Screen.signup),
+          ),
+        );
+
+      case _Screen.signup:
+        return _SimpleBackShell(
+          onBack: () => _go(_Screen.welcome),
+          child: SignupScreen(
+            onSubmit: () => _go(_Screen.devices),
+            onLogin: () => _go(_Screen.login),
+          ),
+        );
+
+      case _Screen.devices:
+        return DevicesScreen(
+          paired: _paired,
+          onAddDevice: () => _go(_Screen.pairing),
+          onDashboard: () => _go(_Screen.dashboard),
+          onBack: () {
+            setState(() {
+              _paired = false;
+              _apps = initialApps();
+            });
+            _go(_Screen.welcome);
+          },
+        );
+
+      case _Screen.dashboard:
+        return DashboardScreen(
+          paired: _paired,
+          onAddDevice: () => _go(_Screen.pairing),
+          onDevices: () => _go(_Screen.devices),
+          onMonitoring: () => _go(_Screen.monitoring),
+          onAlerts: () => _go(_Screen.alerts),
+          onHistory: () => _go(_Screen.history),
+          onSettings: () => _go(_Screen.settings),
+        );
+
+      case _Screen.alerts:
+        return AlertsScreen(
+          alerts: _alerts,
+          onSelectAlert: (id) {
+            _selectedAlertId = id;
+            _go(_Screen.alertDetail);
+          },
+          onBack: () => _go(_Screen.dashboard),
+        );
+
+      case _Screen.alertDetail:
+        return AlertDetailScreen(
+          alert: _alerts.firstWhere((a) => a.id == _selectedAlertId, orElse: () => _alerts.first),
+          onBack: () => _go(_Screen.alerts),
+        );
+
+      case _Screen.history:
+        return HistoryScreen(
+          history: _history,
+          onSelectAlert: (id) {
+            _selectedAlertId = id;
+            _go(_Screen.alertDetail);
+          },
+          onBack: () => _go(_Screen.dashboard),
+        );
+
+      case _Screen.monitoring:
+        return MonitoringScreen(
+          apps: _apps,
+          onAppsChange: (updated) => setState(() => _apps = updated),
+          onSelectApp: (name) {
+            _selectedAppName = name;
+            _go(_Screen.appDetail);
+          },
+          onBack: () => _go(_Screen.dashboard),
+        );
+
+      case _Screen.appDetail:
+        final app = _apps.firstWhere((a) => a.name == _selectedAppName, orElse: () => _apps.first);
+        return AppDetailScreen(
+          app: app,
+          onChange: (updated) => setState(() {
+            _apps = _apps.map((a) => a.name == updated.name ? updated : a).toList();
+          }),
+          onBack: () => _go(_Screen.monitoring),
+        );
+
+      case _Screen.settings:
+        return SettingsScreen(
+          paired: _paired,
+          onDevices: () => _go(_Screen.settingsDevices),
+          onNotifications: () => _go(_Screen.settingsNotifications),
+          onPrivacy: () => _go(_Screen.settingsPrivacy),
+          onBack: () => _go(_Screen.dashboard),
+        );
+
+      case _Screen.settingsDevices:
+        return SettingsDevicesScreen(
+          paired: _paired,
+          onAddDevice: () => _go(_Screen.pairing),
+          onBack: () => _go(_Screen.settings),
+        );
+
+      case _Screen.settingsNotifications:
+        return NotificationSettingsScreen(
+          onBack: () => _go(_Screen.settings),
+        );
+
+      case _Screen.settingsPrivacy:
+        return PrivacySettingsScreen(
+          onBack: () => _go(_Screen.settings),
+        );
+
+      case _Screen.pairing:
+        return PairingScreen(
+          onSuccess: () => _go(_Screen.pairingSuccess),
+          onExpired: () => _go(_Screen.pairingFailed),
+          onGenerate: (_) {},
+        );
+
+      case _Screen.pairingSuccess:
+        return PairingSuccessScreen(
+          onDashboard: () {
+            setState(() => _paired = true);
+            _go(_Screen.dashboard);
+          },
+        );
+
+      case _Screen.pairingFailed:
+        return PairingFailedScreen(
+          onTryAgain: () => _go(_Screen.pairing),
+          onDevices: () => _go(_Screen.devices),
+        );
+    }
+  }
+}
+
+class _SimpleBackShell extends StatelessWidget {
+  const _SimpleBackShell({required this.onBack, required this.child});
+
+  final VoidCallback onBack;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        child,
+        Positioned(
+          top: 24,
+          left: 24,
+          child: InkWell(
+            onTap: onBack,
+            borderRadius: BorderRadius.circular(999),
+            child: SizedBox(
+              width: 36,
+              height: 36,
+              child: Icon(Icons.arrow_back, size: 20, color: context.colors.textSecondary),
+            ),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      ],
     );
   }
 }
