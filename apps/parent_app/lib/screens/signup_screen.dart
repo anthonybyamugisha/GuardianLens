@@ -1,5 +1,9 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../config/api_config.dart';
 import '../theme.dart';
 import '../widgets/fields.dart';
 
@@ -67,10 +71,48 @@ class _SignupScreenState extends State<SignupScreen> {
       _loading = true;
       _error = null;
     });
-    await Future.delayed(const Duration(milliseconds: 1400));
-    if (!mounted) return;
-    setState(() => _loading = false);
-    widget.onSubmit();
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/api/auth/register/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'password2': confirm,
+        }),
+      );
+      if (!mounted) return;
+      setState(() => _loading = false);
+      if (response.statusCode == 201) {
+        widget.onSubmit();
+        return;
+      }
+      setState(() => _error = _errorMessage(response));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Could not reach the server. Check your connection.';
+      });
+    }
+  }
+
+  String _errorMessage(http.Response response) {
+    try {
+      final body = jsonDecode(response.body);
+      if (body is Map<String, dynamic>) {
+        final nonFieldErrors = body['non_field_errors'];
+        if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
+          return nonFieldErrors.first.toString();
+        }
+        for (final value in body.values) {
+          if (value is List && value.isNotEmpty) return value.first.toString();
+          if (value is String && value.isNotEmpty) return value;
+        }
+      }
+    } catch (_) {}
+    return 'Something went wrong (${response.statusCode}). Please try again.';
   }
 
   @override
