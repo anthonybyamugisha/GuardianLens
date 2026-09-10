@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'models.dart';
 import 'screens/alerts_screen.dart';
@@ -26,7 +27,9 @@ void main() {
 }
 
 class GuardianLensApp extends StatelessWidget {
-  const GuardianLensApp({super.key});
+  const GuardianLensApp({super.key, this.httpClient});
+
+  final http.Client? httpClient;
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +41,16 @@ class GuardianLensApp extends StatelessWidget {
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         themeMode: mode,
-        home: const AppRoot(),
+        home: AppRoot(httpClient: httpClient),
       ),
     );
   }
 }
 
 class AppRoot extends StatefulWidget {
-  const AppRoot({super.key});
+  const AppRoot({super.key, this.httpClient});
+
+  final http.Client? httpClient;
 
   @override
   State<AppRoot> createState() => _AppRootState();
@@ -159,6 +164,7 @@ class _AppRootState extends State<AppRoot> {
             onSubmit: () => _go(_Screen.devices),
             onSignUp: () => _go(_Screen.signup),
             onForgotPassword: () => _go(_Screen.forgotPassword),
+            client: widget.httpClient,
           ),
         );
 
@@ -170,6 +176,7 @@ class _AppRootState extends State<AppRoot> {
             onLogin: () => _go(_Screen.login),
             onTerms: () { _referrer = _Screen.signup; _go(_Screen.legalTermsOfService); },
             onPrivacy: () { _referrer = _Screen.signup; _go(_Screen.legalPrivacyPolicy); },
+            client: widget.httpClient,
           ),
         );
 

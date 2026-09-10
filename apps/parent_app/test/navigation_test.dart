@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 import 'package:parent_app/main.dart';
 
 void main() {
+  http.Client fakeApiClient() => MockClient((request) async {
+        if (request.url.path.endsWith('/login/')) return http.Response('', 200);
+        if (request.url.path.endsWith('/register/')) return http.Response('', 201);
+        return http.Response('Not found', 404);
+      });
+
   Future<void> pumpAtPhoneSize(WidgetTester tester) async {
     tester.view.physicalSize = const Size(360, 740);
     tester.view.devicePixelRatio = 1.0;
@@ -11,7 +19,7 @@ void main() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     });
-    await tester.pumpWidget(const GuardianLensApp());
+    await tester.pumpWidget(GuardianLensApp(httpClient: fakeApiClient()));
     await tester.pumpAndSettle();
   }
 
