@@ -19,7 +19,7 @@ class DevicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(24, 20, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,7 +78,7 @@ class DevicesScreen extends StatelessWidget {
                           color: context.colors.cardBackground,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 22),
+child: Icon(Icons.smartphone, color: AppColors.primaryBlueLight, size: 22),
                       ),
                       Spacer(),
                       Container(
@@ -174,7 +174,7 @@ class DevicesScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Spacer(),
+            SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(

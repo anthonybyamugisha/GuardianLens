@@ -9,6 +9,11 @@ class SettingsScreen extends StatelessWidget {
     required this.onDevices,
     required this.onNotifications,
     required this.onPrivacy,
+    required this.onProfile,
+    required this.onTerms,
+    required this.onPrivacyPolicy,
+    required this.onSecurity,
+    required this.onSignOut,
     required this.onBack,
   });
 
@@ -16,6 +21,11 @@ class SettingsScreen extends StatelessWidget {
   final VoidCallback onDevices;
   final VoidCallback onNotifications;
   final VoidCallback onPrivacy;
+  final VoidCallback onProfile;
+  final VoidCallback onTerms;
+  final VoidCallback onPrivacyPolicy;
+  final VoidCallback onSecurity;
+  final VoidCallback onSignOut;
   final VoidCallback onBack;
 
   @override
@@ -52,48 +62,51 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 16),
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: context.colors.blueSurface,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryBlue,
-                      shape: BoxShape.circle,
+            GestureDetector(
+              onTap: onProfile,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: context.colors.blueSurface,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.person_outline, size: 20, color: Colors.white),
                     ),
-                    child: Icon(Icons.person_outline, size: 20, color: Colors.white),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Menhya Joshua',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'menhya.joshua@example.com',
-                          style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
-                        ),
-                      ],
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Menhya Joshua',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.colors.textPrimary),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'menhya.joshua@example.com',
+                            style: TextStyle(fontSize: 12, color: context.colors.textSecondary),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             _SettingsSection(
               title: 'Account',
               children: [
-                _SettingsRow(icon: Icons.person_outline, title: 'Profile information', detail: 'Name and email address'),
-                _SettingsRow(icon: Icons.lock_outline, title: 'Password & security', detail: 'Keep your account secure'),
+                _SettingsRow(icon: Icons.person_outline, title: 'Profile information', detail: 'Name and email address', onTap: onProfile),
+                _SettingsRow(icon: Icons.lock_outline, title: 'Password & security', detail: 'Keep your account secure', onTap: onSecurity),
               ],
             ),
             _SettingsSection(
@@ -136,12 +149,53 @@ class SettingsScreen extends StatelessWidget {
                 _SettingsRow(
                   icon: Icons.article_outlined,
                   title: 'Terms of Service',
+                  onTap: onTerms,
                 ),
                 _SettingsRow(
                   icon: Icons.lock_outline,
                   title: 'Privacy Policy',
+                  onTap: onPrivacyPolicy,
                 ),
               ],
+            ),
+            SizedBox(height: 20),
+            _SignOutButton(onTap: onSignOut),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SignOutButton extends StatelessWidget {
+  const _SignOutButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: context.colors.redCard,
+          border: Border.all(color: context.colors.redCardBorder),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.logout, size: 16, color: AppColors.dangerRedLight),
+            const SizedBox(width: 8),
+            Text(
+              'Sign out',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.dangerRedLight,
+              ),
             ),
           ],
         ),
