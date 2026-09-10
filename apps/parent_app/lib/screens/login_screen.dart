@@ -1,5 +1,9 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../config/api_config.dart';
 import '../theme.dart';
 import '../widgets/fields.dart';
 
@@ -9,11 +13,13 @@ class LoginScreen extends StatefulWidget {
     required this.onSubmit,
     required this.onSignUp,
     required this.onForgotPassword,
+    this.client,
   });
 
   final VoidCallback onSubmit;
   final VoidCallback onSignUp;
   final VoidCallback onForgotPassword;
+  final http.Client? client;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -22,6 +28,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final http.Client _client = widget.client ?? http.Client();
   bool _loading = false;
   String? _error;
 
@@ -49,10 +56,46 @@ class _LoginScreenState extends State<LoginScreen> {
       _loading = true;
       _error = null;
     });
-    await Future.delayed(const Duration(milliseconds: 1200));
-    if (!mounted) return;
-    setState(() => _loading = false);
-    widget.onSubmit();
+    try {
+      final response = await _client.post(
+        Uri.parse('${ApiConfig.baseUrl}/api/auth/login/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'username': email.toLowerCase(), 'password': password}),
+      );
+      if (!mounted) return;
+      setState(() => _loading = false);
+      if (response.statusCode == 200) {
+        widget.onSubmit();
+        return;
+      }
+      setState(() => _error = _errorMessage(response));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Could not reach the server. Check your connection.';
+      });
+    }
+  }
+
+  String _errorMessage(http.Response response) {
+    try {
+      final body = jsonDecode(response.body);
+      if (body is Map<String, dynamic>) {
+        final detail = body['detail'];
+        if (detail is String && detail.isNotEmpty) return detail;
+        final nonFieldErrors = body['non_field_errors'];
+        if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
+          return nonFieldErrors.first.toString();
+        }
+        for (final value in body.values) {
+          if (value is List && value.isNotEmpty) return value.first.toString();
+          if (value is String && value.isNotEmpty) return value;
+        }
+      }
+    } catch (_) {}
+    if (response.statusCode == 401) return 'Incorrect email or password.';
+    return 'Something went wrong (${response.statusCode}). Please try again.';
   }
 
   @override

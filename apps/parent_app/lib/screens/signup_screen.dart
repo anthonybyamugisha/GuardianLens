@@ -1,6 +1,10 @@
-﻿import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+﻿import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../config/api_config.dart';
 import '../theme.dart';
 import '../widgets/fields.dart';
 
@@ -11,12 +15,14 @@ class SignupScreen extends StatefulWidget {
     required this.onLogin,
     required this.onTerms,
     required this.onPrivacy,
+    this.client,
   });
 
   final VoidCallback onSubmit;
   final VoidCallback onLogin;
   final VoidCallback onTerms;
   final VoidCallback onPrivacy;
+  final http.Client? client;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -26,6 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _agreed = false;
   bool _loading = false;
   String? _error;
+  late final http.Client _client = widget.client ?? http.Client();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -72,10 +79,51 @@ class _SignupScreenState extends State<SignupScreen> {
       _loading = true;
       _error = null;
     });
-    await Future.delayed(const Duration(milliseconds: 1400));
-    if (!mounted) return;
-    setState(() => _loading = false);
-    widget.onSubmit();
+    try {
+      final response = await _client.post(
+        Uri.parse('${ApiConfig.baseUrl}/api/auth/register/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'password2': confirm,
+        }),
+      );
+      if (!mounted) return;
+      setState(() => _loading = false);
+      if (response.statusCode == 201) {
+        widget.onSubmit();
+        return;
+      }
+      setState(() => _error = _errorMessage(response));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Could not reach the server. Check your connection.';
+      });
+    }
+  }
+
+  String _errorMessage(http.Response response) {
+    try {
+      final body = jsonDecode(response.body);
+      if (body is Map<String, dynamic>) {
+        final detail = body['detail'];
+        if (detail is String && detail.isNotEmpty) return detail;
+        final nonFieldErrors = body['non_field_errors'];
+        if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
+          return nonFieldErrors.first.toString();
+        }
+        for (final value in body.values) {
+          if (value is List && value.isNotEmpty) return value.first.toString();
+          if (value is String && value.isNotEmpty) return value;
+        }
+      }
+    } catch (_) {}
+    if (response.statusCode == 401) return 'Incorrect email or password.';
+    return 'Something went wrong (${response.statusCode}). Please try again.';
   }
 
   TapGestureRecognizer _termsRecognizer() =>
