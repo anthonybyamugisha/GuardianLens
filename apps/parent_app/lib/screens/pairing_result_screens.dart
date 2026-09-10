@@ -11,7 +11,7 @@ class PairingSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(28, 72, 28, 32),
         child: Column(
           children: [
@@ -42,7 +42,7 @@ class PairingSuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
             ),
-            Spacer(),
+            SizedBox(height: 24),
             PrimaryButton(
               label: 'Go to dashboard',
               icon: Icons.arrow_forward,
@@ -73,7 +73,7 @@ class PairingFailedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(28, 72, 28, 32),
         child: Column(
           children: [
@@ -104,7 +104,7 @@ class PairingFailedScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14, height: 1.6, color: context.colors.textSecondary),
             ),
-            Spacer(),
+            SizedBox(height: 24),
             PrimaryButton(
               label: 'Try again',
               icon: Icons.refresh,

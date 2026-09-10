@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 
 import '../theme.dart';
 import '../widgets/fields.dart';
@@ -8,10 +9,14 @@ class SignupScreen extends StatefulWidget {
     super.key,
     required this.onSubmit,
     required this.onLogin,
+    required this.onTerms,
+    required this.onPrivacy,
   });
 
   final VoidCallback onSubmit;
   final VoidCallback onLogin;
+  final VoidCallback onTerms;
+  final VoidCallback onPrivacy;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -72,6 +77,12 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() => _loading = false);
     widget.onSubmit();
   }
+
+  TapGestureRecognizer _termsRecognizer() =>
+      TapGestureRecognizer()..onTap = widget.onTerms;
+
+  TapGestureRecognizer _privacyRecognizer() =>
+      TapGestureRecognizer()..onTap = widget.onPrivacy;
 
   @override
   Widget build(BuildContext context) {
@@ -168,12 +179,22 @@ class _SignupScreenState extends State<SignupScreen> {
                           TextSpan(text: 'I agree to the '),
                           TextSpan(
                             text: 'Terms of Service',
-                            style: TextStyle(color: AppColors.primaryBlueLight, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: AppColors.primaryBlueLight,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: _termsRecognizer(),
                           ),
                           TextSpan(text: ' and '),
                           TextSpan(
                             text: 'Privacy Policy',
-                            style: TextStyle(color: AppColors.primaryBlueLight, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: AppColors.primaryBlueLight,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: _privacyRecognizer(),
                           ),
                           TextSpan(text: '.'),
                         ],
@@ -195,6 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
             icon: Icons.arrow_forward,
             onPressed: _submit,
             loading: _loading,
+            disabled: !_agreed,
           ),
           SizedBox(height: 20),
           Text.rich(

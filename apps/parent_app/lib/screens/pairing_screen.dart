@@ -58,7 +58,7 @@ class _PairingScreenState extends State<PairingScreen> {
     final expired = _seconds == 0;
 
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(24, 40, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -180,7 +180,7 @@ class _PairingScreenState extends State<PairingScreen> {
               title: 'Enter the code',
               text: 'Type the code above when prompted on their device.',
             ),
-            Spacer(),
+            SizedBox(height: 32),
             PrimaryButton(
               label: 'Simulate device connected',
               icon: Icons.share_outlined,

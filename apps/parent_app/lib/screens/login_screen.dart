@@ -8,10 +8,12 @@ class LoginScreen extends StatefulWidget {
     super.key,
     required this.onSubmit,
     required this.onSignUp,
+    required this.onForgotPassword,
   });
 
   final VoidCallback onSubmit;
   final VoidCallback onSignUp;
+  final VoidCallback onForgotPassword;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -97,14 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Password',
-                      style: TextStyle(color: context.colors.textLightBlue, fontSize: 12, fontWeight: FontWeight.w500),
+                    Expanded(
+                      child: Text(
+                        'Password',
+                        style: TextStyle(color: context.colors.textLightBlue, fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: widget.onForgotPassword,
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primaryBlueLight,
                         padding: EdgeInsets.zero,

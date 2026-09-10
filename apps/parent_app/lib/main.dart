@@ -6,11 +6,15 @@ import 'screens/alert_detail_screen.dart';
 import 'screens/app_detail_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/devices_screen.dart';
+import 'screens/forgot_password_screen.dart';
 import 'screens/history_screen.dart';
+import 'screens/legal_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/monitoring_screen.dart';
 import 'screens/pairing_result_screens.dart';
 import 'screens/pairing_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/security_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/settings_sub_screens.dart';
 import 'screens/signup_screen.dart';
@@ -65,10 +69,16 @@ enum _Screen {
   pairing,
   pairingSuccess,
   pairingFailed,
+  forgotPassword,
+  legalPrivacyPolicy,
+  legalTermsOfService,
+  profile,
+  security,
 }
 
 class _AppRootState extends State<AppRoot> {
   _Screen _screen = _Screen.welcome;
+  _Screen _referrer = _Screen.settings;
 
   bool _paired = false;
   List<MonitoredApp> _apps = initialApps();
@@ -148,6 +158,7 @@ class _AppRootState extends State<AppRoot> {
           child: LoginScreen(
             onSubmit: () => _go(_Screen.devices),
             onSignUp: () => _go(_Screen.signup),
+            onForgotPassword: () => _go(_Screen.forgotPassword),
           ),
         );
 
@@ -157,6 +168,8 @@ class _AppRootState extends State<AppRoot> {
           child: SignupScreen(
             onSubmit: () => _go(_Screen.devices),
             onLogin: () => _go(_Screen.login),
+            onTerms: () { _referrer = _Screen.signup; _go(_Screen.legalTermsOfService); },
+            onPrivacy: () { _referrer = _Screen.signup; _go(_Screen.legalPrivacyPolicy); },
           ),
         );
 
@@ -238,6 +251,17 @@ class _AppRootState extends State<AppRoot> {
           onDevices: () => _go(_Screen.settingsDevices),
           onNotifications: () => _go(_Screen.settingsNotifications),
           onPrivacy: () => _go(_Screen.settingsPrivacy),
+          onProfile: () => _go(_Screen.profile),
+          onTerms: () => _go(_Screen.legalTermsOfService),
+          onPrivacyPolicy: () => _go(_Screen.legalPrivacyPolicy),
+          onSecurity: () => _go(_Screen.security),
+          onSignOut: () {
+            setState(() {
+              _paired = false;
+              _apps = initialApps();
+            });
+            _go(_Screen.welcome);
+          },
           onBack: () => _go(_Screen.dashboard),
         );
 
@@ -278,6 +302,40 @@ class _AppRootState extends State<AppRoot> {
           onTryAgain: () => _go(_Screen.pairing),
           onDevices: () => _go(_Screen.devices),
         );
+
+      case _Screen.forgotPassword:
+        return _SimpleBackShell(
+          onBack: () => _go(_Screen.login),
+          child: ForgotPasswordScreen(onBack: () => _go(_Screen.login)),
+        );
+
+      case _Screen.legalPrivacyPolicy:
+        return _SimpleBackShell(
+          onBack: () => _go(_referrer),
+          child: LegalScreen(
+            title: 'Privacy Policy',
+            updated: 'September 2026',
+            sections: privacyPolicySections,
+            onBack: () => _go(_referrer),
+          ),
+        );
+
+      case _Screen.legalTermsOfService:
+        return _SimpleBackShell(
+          onBack: () => _go(_referrer),
+          child: LegalScreen(
+            title: 'Terms of Service',
+            updated: 'September 2026',
+            sections: termsOfServiceSections,
+            onBack: () => _go(_referrer),
+          ),
+        );
+
+      case _Screen.profile:
+        return ProfileScreen(onBack: () => _go(_Screen.settings));
+
+      case _Screen.security:
+        return SecurityScreen(onBack: () => _go(_Screen.settings));
     }
   }
 }
