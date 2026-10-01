@@ -1,5 +1,6 @@
 ﻿import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,10 +13,16 @@ class SignupScreen extends StatefulWidget {
     super.key,
     required this.onSubmit,
     required this.onLogin,
+    required this.onTerms,
+    required this.onPrivacy,
+    this.client,
   });
 
   final VoidCallback onSubmit;
   final VoidCallback onLogin;
+  final VoidCallback onTerms;
+  final VoidCallback onPrivacy;
+  final http.Client? client;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -25,6 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _agreed = false;
   bool _loading = false;
   String? _error;
+  late final http.Client _client = widget.client ?? http.Client();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -72,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _error = null;
     });
     try {
-      final response = await http.post(
+      final response = await _client.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/register/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -102,6 +110,8 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       final body = jsonDecode(response.body);
       if (body is Map<String, dynamic>) {
+        final detail = body['detail'];
+        if (detail is String && detail.isNotEmpty) return detail;
         final nonFieldErrors = body['non_field_errors'];
         if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
           return nonFieldErrors.first.toString();
@@ -112,8 +122,15 @@ class _SignupScreenState extends State<SignupScreen> {
         }
       }
     } catch (_) {}
+    if (response.statusCode == 401) return 'Incorrect email or password.';
     return 'Something went wrong (${response.statusCode}). Please try again.';
   }
+
+  TapGestureRecognizer _termsRecognizer() =>
+      TapGestureRecognizer()..onTap = widget.onTerms;
+
+  TapGestureRecognizer _privacyRecognizer() =>
+      TapGestureRecognizer()..onTap = widget.onPrivacy;
 
   @override
   Widget build(BuildContext context) {
@@ -210,12 +227,22 @@ class _SignupScreenState extends State<SignupScreen> {
                           TextSpan(text: 'I agree to the '),
                           TextSpan(
                             text: 'Terms of Service',
-                            style: TextStyle(color: AppColors.primaryBlueLight, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: AppColors.primaryBlueLight,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: _termsRecognizer(),
                           ),
                           TextSpan(text: ' and '),
                           TextSpan(
                             text: 'Privacy Policy',
-                            style: TextStyle(color: AppColors.primaryBlueLight, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: AppColors.primaryBlueLight,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: _privacyRecognizer(),
                           ),
                           TextSpan(text: '.'),
                         ],
@@ -237,6 +264,7 @@ class _SignupScreenState extends State<SignupScreen> {
             icon: Icons.arrow_forward,
             onPressed: _submit,
             loading: _loading,
+            disabled: !_agreed,
           ),
           SizedBox(height: 20),
           Text.rich(

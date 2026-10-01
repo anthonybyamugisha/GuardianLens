@@ -2,8 +2,8 @@
 
 import '../theme.dart';
 
-class GLField extends StatelessWidget {
-  GLField({
+class GLField extends StatefulWidget {
+  const GLField({
     super.key,
     this.label,
     required this.icon,
@@ -23,24 +23,31 @@ class GLField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
 
   @override
+  State<GLField> createState() => _GLFieldState();
+}
+
+class _GLFieldState extends State<GLField> {
+  late bool _obscured = widget.obscure;
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
+        if (widget.label != null) ...[
           Text(
-            label!,
+            widget.label!,
             style: TextStyle(
               color: context.colors.textLightBlue,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
         ],
         Container(
           height: 44,
-          padding: EdgeInsets.symmetric(horizontal: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: context.colors.inputBackground,
             border: Border.all(color: context.colors.borderInput),
@@ -48,17 +55,17 @@ class GLField extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, size: 17, color: context.colors.textFaint),
-              SizedBox(width: 12),
+              Icon(widget.icon, size: 17, color: context.colors.textFaint),
+              const SizedBox(width: 12),
               Expanded(
                 child: TextField(
-                  controller: controller,
-                  onChanged: onChanged,
-                  keyboardType: type,
-                  obscureText: obscure,
+                  controller: widget.controller,
+                  onChanged: widget.onChanged,
+                  keyboardType: widget.type,
+                  obscureText: _obscured,
                   decoration: InputDecoration(
                     isCollapsed: true,
-                    hintText: placeholder,
+                    hintText: widget.placeholder,
                     hintStyle: TextStyle(
                       color: context.colors.textPlaceholder,
                       fontSize: 14,
@@ -68,10 +75,22 @@ class GLField extends StatelessWidget {
                   style: TextStyle(color: context.colors.textPrimary, fontSize: 14),
                 ),
               ),
+              if (widget.obscure)
+                GestureDetector(
+                  onTap: () => setState(() => _obscured = !_obscured),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      _obscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      size: 17,
+                      color: context.colors.textFaint,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
-      ],
+],
     );
   }
 }

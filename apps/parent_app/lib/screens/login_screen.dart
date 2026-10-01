@@ -12,10 +12,14 @@ class LoginScreen extends StatefulWidget {
     super.key,
     required this.onSubmit,
     required this.onSignUp,
+    required this.onForgotPassword,
+    this.client,
   });
 
   final VoidCallback onSubmit;
   final VoidCallback onSignUp;
+  final VoidCallback onForgotPassword;
+  final http.Client? client;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -24,6 +28,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final http.Client _client = widget.client ?? http.Client();
   bool _loading = false;
   String? _error;
 
@@ -52,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _error = null;
     });
     try {
-      final response = await http.post(
+      final response = await _client.post(
         Uri.parse('${ApiConfig.baseUrl}/api/auth/login/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': email.toLowerCase(), 'password': password}),
@@ -137,14 +142,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Password',
-                      style: TextStyle(color: context.colors.textLightBlue, fontSize: 12, fontWeight: FontWeight.w500),
+                    Expanded(
+                      child: Text(
+                        'Password',
+                        style: TextStyle(color: context.colors.textLightBlue, fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: widget.onForgotPassword,
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primaryBlueLight,
                         padding: EdgeInsets.zero,

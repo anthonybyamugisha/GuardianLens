@@ -89,7 +89,9 @@ class DashboardScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: paired ? _DashboardData() : _DashboardEmpty(onAddDevice: onAddDevice),
+              child: paired
+                  ? SingleChildScrollView(child: _DashboardData())
+                  : _DashboardEmpty(onAddDevice: onAddDevice),
             ),
             SizedBox(height: 12),
             Container(
