@@ -25,7 +25,7 @@ def split_paths(out_dir: Path | None = None) -> dict[str, Path]:
     return {name: base / f"{name}.csv" for name in SPLIT_NAMES}
 
 
-def _read_split(path: Path) -> tuple[list[str], list[int]]:
+def read_split(path: Path) -> tuple[list[str], list[int]]:
     paths: list[str] = []
     labels: list[int] = []
     with Path(path).open(newline="", encoding="utf-8") as handle:
@@ -71,7 +71,7 @@ def make_dataset(
     """Build a batched, prefetched ``tf.data.Dataset`` from a split CSV."""
     import tensorflow as tf
 
-    paths, labels = _read_split(split_path)
+    paths, labels = read_split(split_path)
     dataset = tf.data.Dataset.from_tensor_slices((paths, labels))
     do_shuffle = training if shuffle is None else shuffle
     if do_shuffle:
