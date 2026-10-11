@@ -1,14 +1,15 @@
 {
   "schema_version": 1,
-  "notes": "Image-only datasets. No video. No Kaggle. Licenses must be reviewed before use.",
+  "notes": "Image-only datasets. No video. No Kaggle. Licenses must be reviewed before use. 'core: true' means download now; others are deferred.",
   "datasets": [
     {
       "name": "UnsafeBench",
       "id": "yiting/UnsafeBench",
       "source": "huggingface",
       "modality": "image",
-      "use": "unsafe",
+      "use": "unsafe+safe",
       "license": "research (acknowledge, gated)",
+      "core": true,
       "categories": [
         "Sexual",
         "Violence",
@@ -31,7 +32,20 @@
       "modality": "image",
       "use": "unsafe",
       "license": "MIT",
+      "core": true,
       "categories": ["nsfw", "safe"],
+      "downloaded": false
+    },
+    {
+      "name": "violence_images",
+      "id": "ChinaZhangPeng/Violence-Image-Dataset",
+      "source": "github",
+      "branch": "master",
+      "modality": "image",
+      "use": "unsafe",
+      "license": "see repo",
+      "core": true,
+      "categories": ["violent", "non-violent"],
       "downloaded": false
     },
     {
@@ -41,6 +55,7 @@
       "modality": "image",
       "use": "unsafe",
       "license": "CC",
+      "core": false,
       "categories": ["nsfw", "safe"],
       "downloaded": false
     },
@@ -48,20 +63,12 @@
       "name": "nsfw_model (data scraper)",
       "id": "GantMan/nsfw_model",
       "source": "github",
+      "branch": "master",
       "modality": "image",
       "use": "unsafe",
       "license": "see repo",
+      "core": false,
       "categories": ["porn", "hentai", "sexy", "neutral", "drawings"],
-      "downloaded": false
-    },
-    {
-      "name": "Violence-Image-Dataset",
-      "id": "ChinaZhangPeng/Violence-Image-Dataset",
-      "source": "github",
-      "modality": "image",
-      "use": "unsafe",
-      "license": "see repo",
-      "categories": ["violent", "non-violent"],
       "downloaded": false
     },
     {
@@ -71,6 +78,8 @@
       "modality": "image",
       "use": "safe",
       "license": "CC-BY-4.0",
+      "core": false,
+      "allow_patterns": ["ui-screenshots-and-view-hierarchies/*"],
       "categories": ["ui-screen"],
       "downloaded": false
     },
@@ -81,6 +90,7 @@
       "modality": "image",
       "use": "safe",
       "license": "CC-BY-4.0",
+      "core": false,
       "categories": ["ui-screen"],
       "downloaded": false
     },
@@ -88,9 +98,11 @@
       "name": "Enrico",
       "id": "luileito/enrico",
       "source": "github",
+      "branch": "master",
       "modality": "image",
       "use": "safe",
       "license": "MIT",
+      "core": false,
       "categories": ["ui-screen"],
       "downloaded": false
     }
