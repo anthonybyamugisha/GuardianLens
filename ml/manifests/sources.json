@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "notes": "Image-only datasets. No video. No Kaggle. Licenses must be reviewed before use.",
+  "datasets": [
+    {
+      "name": "UnsafeBench",
+      "id": "yiting/UnsafeBench",
+      "source": "huggingface",
+      "modality": "image",
+      "use": "unsafe",
+      "license": "research (acknowledge, gated)",
+      "categories": [
+        "Sexual",
+        "Violence",
+        "Hate",
+        "Harassment",
+        "Self-Harm",
+        "Shocking",
+        "Illegal Activity",
+        "Deception",
+        "Political",
+        "Public and Personal Health",
+        "Spam"
+      ],
+      "downloaded": false
+    },
+    {
+      "name": "nsfw_detect",
+      "id": "deepghs/nsfw_detect",
+      "source": "huggingface",
+      "modality": "image",
+      "use": "unsafe",
+      "license": "MIT",
+      "categories": ["nsfw", "safe"],
+      "downloaded": false
+    },
+    {
+      "name": "nsfw-image-classification",
+      "id": "DarkyMan/nsfw-image-classification",
+      "source": "huggingface",
+      "modality": "image",
+      "use": "unsafe",
+      "license": "CC",
+      "categories": ["nsfw", "safe"],
+      "downloaded": false
+    },
+    {
+      "name": "nsfw_model (data scraper)",
+      "id": "GantMan/nsfw_model",
+      "source": "github",
+      "modality": "image",
+      "use": "unsafe",
+      "license": "see repo",
+      "categories": ["porn", "hentai", "sexy", "neutral", "drawings"],
+      "downloaded": false
+    },
+    {
+      "name": "Violence-Image-Dataset",
+      "id": "ChinaZhangPeng/Violence-Image-Dataset",
+      "source": "github",
+      "modality": "image",
+      "use": "unsafe",
+      "license": "see repo",
+      "categories": ["violent", "non-violent"],
+      "downloaded": false
+    },
+    {
+      "name": "Rico",
+      "id": "creative-graphic-design/Rico",
+      "source": "huggingface",
+      "modality": "image",
+      "use": "safe",
+      "license": "CC-BY-4.0",
+      "categories": ["ui-screen"],
+      "downloaded": false
+    },
+    {
+      "name": "RICO-ScreenAnnotation-f",
+      "id": "bevaya/RICO-ScreenAnnotation-f",
+      "source": "huggingface",
+      "modality": "image",
+      "use": "safe",
+      "license": "CC-BY-4.0",
+      "categories": ["ui-screen"],
+      "downloaded": false
+    },
+    {
+      "name": "Enrico",
+      "id": "luileito/enrico",
+      "source": "github",
+      "modality": "image",
+      "use": "safe",
+      "license": "MIT",
+      "categories": ["ui-screen"],
+      "downloaded": false
+    }
+  ]
+}
