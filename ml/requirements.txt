@@ -1,0 +1,12 @@
+# Dataset acquisition
+huggingface_hub>=0.34
+pillow>=11
+tqdm>=4.66
+
+# Dataset processing
+numpy>=2.0
+imagehash>=4.3
+
+# Training (install on a GPU machine / Colab, not required for acquisition)
+# tensorflow>=2.20
+# tensorflow-model-optimization>=0.8
