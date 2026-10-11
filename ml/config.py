@@ -39,6 +39,12 @@ BATCH_SIZE = 32
 EPOCHS = 40
 LEARNING_RATE = 1e-3
 
+# Floating-point model backbone: a MobileNetV2 width multiplier (0.35-1.4).
+# Lower values shrink the network for faster on-device inference at a small
+# accuracy cost. The backbone is trained from scratch (no pretrained weights).
+MOBILENET_ALPHA = 1.0
+DROPOUT = 0.3
+
 MIN_IMAGE_SIZE = 64         # drop anything smaller than this (either side)
 
 # ---------------------------------------------------------------------------

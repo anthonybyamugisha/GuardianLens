@@ -1,84 +1,65 @@
 """Stage 6 - Model definition.
 
-A compact, from-scratch convolutional network in the spirit of MobileNetV2:
-an inverted-residual (depthwise-separable) backbone with a lightweight
-classifier head. It is intentionally small (< ~2.5M params) so it exports to
-a few-megabyte TFLite model that runs on-device.
+A MobileNetV2 backbone with a small classification head. MobileNetV2's
+depthwise-separable convolutions keep the model small and fast enough for
+on-device inference, and its width multiplier (``alpha``) can be lowered to
+trade accuracy for speed on weaker phones.
+
+The backbone is created with ``weights=None`` so the network is trained
+entirely from scratch on GuardianLens's own dataset; no pretrained (cloud)
+weights are downloaded at any point.
 
 TensorFlow is imported lazily so this module can be imported without TF.
 
 Usage:
-    python -m src.model            # prints the model summary
+    python -m src.model                  # prints the model summary
+    python -m src.model --alpha 0.5      # smaller/faster variant
 """
 from __future__ import annotations
+
+import argparse
 
 import config
 
 
-def _conv_bn(x, filters, kernel=3, stride=1, activation="relu6"):
-    from tensorflow.keras import layers
+def build_model(
+    image_size: int = config.IMAGE_SIZE,
+    alpha: float = config.MOBILENET_ALPHA,
+    num_classes: int = config.NUM_CLASSES,
+    dropout: float = config.DROPOUT,
+):
+    """Build a MobileNetV2-backed binary/multi-class moderation model."""
+    from tensorflow.keras import layers, Model
+    from tensorflow.keras.applications import MobileNetV2
 
-    x = layers.Conv2D(
-        filters, kernel, strides=stride, padding="same", use_bias=False
-    )(x)
-    x = layers.BatchNormalization()(x)
-    if activation:
-        x = layers.Activation(activation)(x)
-    return x
+    backbone = MobileNetV2(
+        input_shape=(image_size, image_size, config.CHANNELS),
+        alpha=alpha,
+        include_top=False,
+        weights=None,
+    )
 
-
-def _inverted_residual(x, filters, stride, expand=6):
-    """MobileNetV2-style block: expand -> depthwise -> project (+ residual)."""
-    from tensorflow.keras import layers
-
-    in_channels = x.shape[-1]
-    hidden = max(filters, int(round(in_channels * expand)))
-    y = _conv_bn(x, hidden, kernel=1, stride=1)
-    y = layers.DepthwiseConv2D(3, strides=stride, padding="same", use_bias=False)(y)
-    y = layers.BatchNormalization()(y)
-    y = layers.Activation("relu6")(y)
-    y = layers.Conv2D(filters, 1, padding="same", use_bias=False)(y)
-    y = layers.BatchNormalization()(y)
-    if stride == 1 and in_channels == filters:
-        y = layers.Add()([x, y])
-    return y
-
-
-def build_model(image_size: int = config.IMAGE_SIZE, num_classes: int = config.NUM_CLASSES):
-    """Construct and return the (uncompiled) Keras model."""
-    from tensorflow.keras import Model, layers
-
-    inputs = layers.Input(shape=(image_size, image_size, config.CHANNELS), name="image")
-    x = _conv_bn(inputs, 32, kernel=3, stride=2)          # 112
-    x = _conv_bn(x, 32, kernel=3, stride=1)
-
-    # Inverted-residual backbone: (filters, stride, expansion).
-    for filters, stride, expand in [
-        (16, 1, 1),
-        (24, 2, 6),
-        (24, 1, 6),
-        (32, 2, 6),
-        (32, 1, 6),
-        (64, 2, 6),
-        (64, 1, 6),
-        (96, 2, 6),
-        (96, 1, 6),
-        (160, 2, 6),
-    ]:
-        x = _inverted_residual(x, filters, stride, expand)
-
-    x = _conv_bn(x, 256, kernel=1, stride=1)
-    x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dropout(0.3)(x)
+    x = layers.GlobalAveragePooling2D()(backbone.output)
+    x = layers.Dropout(dropout)(x)
 
     if num_classes == 2:
         outputs = layers.Dense(1, activation="sigmoid", name="unsafe")(x)
     else:
         outputs = layers.Dense(num_classes, activation="softmax", name="class")(x)
 
-    return Model(inputs, outputs, name="guardianlens_moderator")
+    return Model(backbone.input, outputs, name=f"guardianlens_mobilenetv2_a{alpha}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--image-size", type=int, default=config.IMAGE_SIZE)
+    parser.add_argument("--alpha", type=float, default=config.MOBILENET_ALPHA)
+    args = parser.parse_args()
+
+    net = build_model(image_size=args.image_size, alpha=args.alpha)
+    net.summary()
+    print(f"parameters: {net.count_params():,}")
 
 
 if __name__ == "__main__":
-    model = build_model()
-    model.summary()
+    main()
