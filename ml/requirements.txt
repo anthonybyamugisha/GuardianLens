@@ -1,0 +1,13 @@
+# Dataset acquisition
+huggingface_hub>=0.34
+pillow>=11
+tqdm>=4.66
+
+# Dataset processing
+numpy>=2.0
+pandas>=2.2
+pyarrow>=17.0
+imagehash>=4.3
+
+# Training / export (Python 3.13 needs TensorFlow >= 2.20)
+tensorflow>=2.20

@@ -19,6 +19,14 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from backend/.env when present (python-dotenv).
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(BASE_DIR / ".env")
+except ImportError:  # python-dotenv is optional
+    pass
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -166,6 +174,19 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
+# Development toggle: set DISABLE_AUTH=1 (e.g. in backend/.env) to bypass
+# authentication entirely while the team builds the core features. Every
+# request is then treated as a shared demo user. Never enable in production.
+DISABLE_AUTH = os.environ.get("DISABLE_AUTH", "0") == "1"
+
+if DISABLE_AUTH:
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
+        "accounts.dev_auth.DevUserAuthentication",
+    ]
+    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = [
+        "rest_framework.permissions.AllowAny",
+    ]
 
 AUTH_USER_MODEL = "accounts.User"
 

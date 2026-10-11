@@ -7,7 +7,10 @@ The system consists of:
 - A GuardianLens parent application
 - A GuardianLens child-agent application
 - A shared Django REST backend
-- Google Cloud Vision SafeSearch integration
+- An offline, on-device visual-moderation model (TensorFlow Lite)
+
+Screen frames are classified locally on the device. No screen content is
+uploaded, and no cloud moderation API is used.
 
 ## Project Components
 
@@ -32,7 +35,7 @@ The child agent will:
 - Request the necessary Android permissions
 - Detect when a monitored application is active
 - Periodically capture authorised screen frames
-- Submit frames for visual moderation
+- Classify frames on-device with the local TensorFlow Lite model
 - Display a visible warning for flagged content
 - Report minimal event metadata to the backend
 
@@ -44,7 +47,7 @@ The backend will provide:
 - Child-profile management
 - Device registration and pairing
 - Monitoring-rule management
-- Moderation API integration
+- Moderation-event ingestion from devices
 - Safety-event storage
 - Parent alert retrieval
 
@@ -55,7 +58,7 @@ The backend will provide:
 - Python and Django
 - Django REST Framework
 - SQLite during initial development
-- Google Cloud Vision SafeSearch
+- TensorFlow/Keras and TensorFlow Lite (offline, on-device model)
 - JSON Web Tokens for API authentication
 - Git and GitHub for version control
 
@@ -76,11 +79,28 @@ GuardianLens/
 │   ├── alerts/
 │   ├── config/
 │   └── manage.py
+├── ml/
+│   ├── config.py
+│   ├── src/
+│   ├── manifests/
+│   └── models/
 ├── venv/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
+
+## Machine Learning Model
+
+The child agent classifies screen frames **on the device** with a small
+TensorFlow Lite model. Screen content never leaves the device and no cloud
+moderation service is involved. The model is trained from scratch in this
+repository.
+
+- Training pipeline and code: `ml/` (see `ml/README.md`)
+- Dataset sources and provenance: `ml/manifests/sources.json`
+- Exported model: `ml/models/moderator.tflite`, bundled into the child
+  agent's `assets/` at build time.
 
 ## Backend Setup
 

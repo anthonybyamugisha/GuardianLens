@@ -1,0 +1,28 @@
+# Downloaded and generated data
+data/raw/*
+data/extracted/*
+data/cleaned/*
+data/processed/*
+data/splits/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/splits/.gitkeep
+!data/extracted/.gitkeep
+!data/cleaned/.gitkeep
+
+# Generated dataset manifests (sources.json stays tracked)
+manifests/*.csv
+
+# Model artifacts
+models/*
+!models/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
