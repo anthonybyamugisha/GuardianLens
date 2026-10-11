@@ -79,6 +79,7 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=config.EPOCHS)
     parser.add_argument("--batch-size", type=int, default=config.BATCH_SIZE)
     parser.add_argument("--image-size", type=int, default=config.IMAGE_SIZE)
+    parser.add_argument("--alpha", type=float, default=config.MOBILENET_ALPHA)
     parser.add_argument("--lr", type=float, default=config.LEARNING_RATE)
     parser.add_argument("--out", type=Path, default=config.MODEL_DIR / "moderator.keras")
     args = parser.parse_args()
@@ -98,7 +99,7 @@ def main() -> None:
     weights = class_weights(paths["train"])
     print("class weights:", weights)
 
-    net = model.build_model(image_size=args.image_size)
+    net = model.build_model(image_size=args.image_size, alpha=args.alpha)
     compile_model(net, args.lr)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

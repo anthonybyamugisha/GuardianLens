@@ -38,10 +38,15 @@ def representative_dataset(samples: int = 200):
         yield [images]
 
 
-def convert(model_path: Path, quant: str, samples: int):
+def load_model(model_path: Path):
     import tensorflow as tf
 
-    net = tf.keras.models.load_model(model_path)
+    return tf.keras.models.load_model(model_path)
+
+
+def convert(net, quant: str, samples: int):
+    import tensorflow as tf
+
     converter = tf.lite.TFLiteConverter.from_keras_model(net)
 
     if quant == "float16":
@@ -65,11 +70,12 @@ def variant_path(base: Path, quant: str) -> Path:
     return base.with_name(f"{base.stem}_{quant}.tflite")
 
 
-def write_labels(base: Path) -> Path:
+def write_labels(base: Path, net) -> Path:
+    _, height, width, _ = net.input_shape
     meta = {
         "classes": config.CLASSES,
         "num_classes": config.NUM_CLASSES,
-        "image_size": config.IMAGE_SIZE,
+        "image_size": int(height),
         "input_scaling": "0-1",
     }
     path = base.with_name(f"{base.stem}_labels.json")
@@ -85,15 +91,16 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=200)
     args = parser.parse_args()
 
+    net = load_model(args.model)
     quants = QUANTS if args.quant == "all" else (args.quant,)
     for quant in quants:
-        buffer = convert(args.model, quant, args.samples)
+        buffer = convert(net, quant, args.samples)
         out = variant_path(args.out, quant) if args.quant == "all" else args.out
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(buffer)
         print(f"wrote {quant:<8} -> {out} ({len(buffer) / 1e6:.2f} MB)")
 
-    print(f"wrote labels   -> {write_labels(args.out)}")
+    print(f"wrote labels   -> {write_labels(args.out, net)}")
 
 
 if __name__ == "__main__":
