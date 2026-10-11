@@ -12,6 +12,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 ML_ROOT = Path(__file__).resolve().parent
 RAW_DIR = ML_ROOT / "data" / "raw"
+EXTRACT_DIR = ML_ROOT / "data" / "extracted"
 
 # Intermediate outputs of the pipeline stages.
 CLEAN_DIR = ML_ROOT / "data" / "cleaned"
@@ -51,10 +52,10 @@ NUM_CLASSES = len(CLASSES)
 
 # Map each source's native labels onto our target classes.
 TAXONOMY: dict[str, dict[str, str]] = {
-    # deepghs/nsfw_detect: drawing + neutral are treated as safe.
+    # deepghs/nsfw_detect: drawings + neutral are treated as safe.
     "nsfw_detect": {
         "neutral": "safe",
-        "drawing": "safe",
+        "drawings": "safe",
         "sexy": "unsafe",
         "hentai": "unsafe",
         "porn": "unsafe",
