@@ -30,9 +30,13 @@ from src import build_dataset
 QUANTS = ("float16", "dynamic", "int8")
 
 
-def representative_dataset(samples: int = 200):
+def representative_dataset(samples: int, image_size: int):
     dataset = build_dataset.make_dataset(
-        build_dataset.split_paths()["train"], training=False, batch_size=1, shuffle=True
+        build_dataset.split_paths()["train"],
+        training=False,
+        batch_size=1,
+        image_size=image_size,
+        shuffle=True,
     )
     for images, _ in dataset.take(samples):
         yield [images]
@@ -47,6 +51,7 @@ def load_model(model_path: Path):
 def convert(net, quant: str, samples: int):
     import tensorflow as tf
 
+    image_size = int(net.input_shape[1])
     converter = tf.lite.TFLiteConverter.from_keras_model(net)
 
     if quant == "float16":
@@ -56,7 +61,7 @@ def convert(net, quant: str, samples: int):
         converter.optimizations = [tf.lite.Optimize.DEFAULT]
     elif quant == "int8":
         converter.optimizations = [tf.lite.Optimize.DEFAULT]
-        converter.representative_dataset = lambda: representative_dataset(samples)
+        converter.representative_dataset = lambda: representative_dataset(samples, image_size)
         converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
         converter.inference_input_type = tf.int8
         converter.inference_output_type = tf.int8
