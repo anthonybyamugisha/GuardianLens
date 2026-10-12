@@ -39,11 +39,15 @@ def main() -> None:
 
     paths = build_dataset.split_paths()
     _, y_true = build_dataset.read_split(paths["test"])
-    test_ds = build_dataset.make_dataset(
-        paths["test"], training=False, batch_size=args.batch_size, shuffle=False
-    )
-
     net = tf.keras.models.load_model(args.model)
+    image_size = net.input_shape[1]
+    test_ds = build_dataset.make_dataset(
+        paths["test"],
+        training=False,
+        batch_size=args.batch_size,
+        image_size=image_size,
+        shuffle=False,
+    )
     scores = net.predict(test_ds).reshape(-1)
     y_true = np.asarray(y_true)
 
