@@ -30,18 +30,28 @@ from src import build_dataset
 QUANTS = ("float16", "dynamic", "int8")
 
 
-def representative_dataset(samples: int = 200):
+def representative_dataset(samples: int, image_size: int):
     dataset = build_dataset.make_dataset(
-        build_dataset.split_paths()["train"], training=False, batch_size=1, shuffle=True
+        build_dataset.split_paths()["train"],
+        training=False,
+        batch_size=1,
+        image_size=image_size,
+        shuffle=True,
     )
     for images, _ in dataset.take(samples):
         yield [images]
 
 
-def convert(model_path: Path, quant: str, samples: int):
+def load_model(model_path: Path):
     import tensorflow as tf
 
-    net = tf.keras.models.load_model(model_path)
+    return tf.keras.models.load_model(model_path)
+
+
+def convert(net, quant: str, samples: int):
+    import tensorflow as tf
+
+    image_size = int(net.input_shape[1])
     converter = tf.lite.TFLiteConverter.from_keras_model(net)
 
     if quant == "float16":
@@ -51,7 +61,7 @@ def convert(model_path: Path, quant: str, samples: int):
         converter.optimizations = [tf.lite.Optimize.DEFAULT]
     elif quant == "int8":
         converter.optimizations = [tf.lite.Optimize.DEFAULT]
-        converter.representative_dataset = lambda: representative_dataset(samples)
+        converter.representative_dataset = lambda: representative_dataset(samples, image_size)
         converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
         converter.inference_input_type = tf.int8
         converter.inference_output_type = tf.int8
@@ -65,11 +75,12 @@ def variant_path(base: Path, quant: str) -> Path:
     return base.with_name(f"{base.stem}_{quant}.tflite")
 
 
-def write_labels(base: Path) -> Path:
+def write_labels(base: Path, net) -> Path:
+    _, height, width, _ = net.input_shape
     meta = {
         "classes": config.CLASSES,
         "num_classes": config.NUM_CLASSES,
-        "image_size": config.IMAGE_SIZE,
+        "image_size": int(height),
         "input_scaling": "0-1",
     }
     path = base.with_name(f"{base.stem}_labels.json")
@@ -85,15 +96,16 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=200)
     args = parser.parse_args()
 
+    net = load_model(args.model)
     quants = QUANTS if args.quant == "all" else (args.quant,)
     for quant in quants:
-        buffer = convert(args.model, quant, args.samples)
+        buffer = convert(net, quant, args.samples)
         out = variant_path(args.out, quant) if args.quant == "all" else args.out
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(buffer)
         print(f"wrote {quant:<8} -> {out} ({len(buffer) / 1e6:.2f} MB)")
 
-    print(f"wrote labels   -> {write_labels(args.out)}")
+    print(f"wrote labels   -> {write_labels(args.out, net)}")
 
 
 if __name__ == "__main__":
