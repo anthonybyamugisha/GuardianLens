@@ -1,14 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 
 import '../config/moderation_config.dart';
 import '../services/moderator.dart';
+import '../services/monitor_controller.dart';
 import '../widgets/unsafe_warning.dart';
 
-/// Status + harness screen for the on-device moderator.
+/// Status + control screen for the on-device moderator.
 ///
-/// Loads the bundled model and lets a frame be classified. This is the surface
-/// the screen-capture pipeline will feed once it is wired in.
+/// Loads the bundled model, then samples the screen on a timer, classifies each
+/// new frame locally, and warns the child when unsafe content is detected.
 class ModerationScreen extends StatefulWidget {
   const ModerationScreen({super.key});
 
@@ -18,9 +20,13 @@ class ModerationScreen extends StatefulWidget {
 
 class _ModerationScreenState extends State<ModerationScreen> {
   ModeratorClassifier? _classifier;
-  ModerationResult? _lastResult;
+  MonitorController? _controller;
+
   String? _error;
-  bool _busy = false;
+  bool _monitoring = false;
+  ModerationResult? _lastResult;
+  Uint8List? _lastFrame;
+  int _warnings = 0;
 
   @override
   void initState() {
@@ -30,6 +36,7 @@ class _ModerationScreenState extends State<ModerationScreen> {
 
   @override
   void dispose() {
+    _controller?.stop();
     _classifier?.dispose();
     super.dispose();
   }
@@ -37,38 +44,57 @@ class _ModerationScreenState extends State<ModerationScreen> {
   Future<void> _load() async {
     try {
       final classifier = await ModeratorClassifier.load();
+      final controller = MonitorController(classifier: classifier)
+        ..onResult = _handleResult
+        ..onWarning = _handleWarning
+        ..onError = _handleError;
       if (!mounted) return;
-      setState(() => _classifier = classifier);
+      setState(() {
+        _classifier = classifier;
+        _controller = controller;
+      });
     } catch (error) {
       if (!mounted) return;
       setState(() => _error = '$error');
     }
   }
 
-  Future<void> _scanTestFrame() async {
-    final classifier = _classifier;
-    if (classifier == null) return;
-    setState(() => _busy = true);
-    final result = classifier.classify(_syntheticFrame());
+  void _handleResult(ModerationResult result, Uint8List frame) {
     if (!mounted) return;
     setState(() {
       _lastResult = result;
-      _busy = false;
+      _lastFrame = frame;
     });
-    if (result.isUnsafe) {
-      await showUnsafeWarning(context, score: result.unsafeProbability);
-    }
   }
 
-  img.Image _syntheticFrame() {
-    const size = ModerationConfig.imageSize;
-    final image = img.Image(width: size, height: size, numChannels: 3);
-    for (var y = 0; y < size; y++) {
-      for (var x = 0; x < size; x++) {
-        image.setPixelRgb(x, y, x * 2, y * 2, 128);
-      }
+  void _handleWarning(ModerationResult result) {
+    if (!mounted) return;
+    setState(() => _warnings++);
+    showUnsafeWarning(context, score: result.unsafeProbability);
+  }
+
+  void _handleError(Object error) {
+    if (!mounted) return;
+    setState(() => _error = '$error');
+  }
+
+  Future<void> _toggleMonitoring() async {
+    final controller = _controller;
+    if (controller == null) return;
+    if (_monitoring) {
+      await controller.stop();
+      if (!mounted) return;
+      setState(() => _monitoring = false);
+      return;
     }
-    return image;
+    final started = await controller.start();
+    if (!mounted) return;
+    setState(() => _monitoring = started);
+    if (!started) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Screen-capture permission was denied.')),
+      );
+    }
   }
 
   @override
@@ -81,6 +107,7 @@ class _ModerationScreenState extends State<ModerationScreen> {
         children: [
           _StatusCard(
             ready: ready,
+            monitoring: _monitoring,
             error: _error,
             labels: _classifier?.labels ?? const [],
           ),
@@ -88,20 +115,33 @@ class _ModerationScreenState extends State<ModerationScreen> {
           const _ConfigCard(),
           const SizedBox(height: 20),
           FilledButton.icon(
-            onPressed: ready && !_busy ? _scanTestFrame : null,
-            icon: const Icon(Icons.shield_outlined),
-            label: const Text('Run test scan'),
+            onPressed: ready ? _toggleMonitoring : null,
+            icon: Icon(_monitoring ? Icons.stop : Icons.play_arrow),
+            label: Text(_monitoring ? 'Stop protection' : 'Start protection'),
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
-            onPressed: () =>
-                showUnsafeWarning(context, score: 0.93),
+            onPressed: () => showUnsafeWarning(context, score: 0.93),
             icon: const Icon(Icons.warning_amber_rounded),
             label: const Text('Preview warning'),
           ),
+          if (_lastFrame != null) ...[
+            const SizedBox(height: 20),
+            const Text('Last sampled frame',
+                style: TextStyle(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.memory(_lastFrame!, height: 180, fit: BoxFit.contain),
+            ),
+          ],
           const SizedBox(height: 20),
-          if (_busy) const LinearProgressIndicator(),
           if (_lastResult != null) _ResultCard(result: _lastResult!),
+          if (_warnings > 0) ...[
+            const SizedBox(height: 8),
+            Text('Warnings shown: $_warnings',
+                style: const TextStyle(color: Colors.red)),
+          ],
         ],
       ),
     );
@@ -109,9 +149,15 @@ class _ModerationScreenState extends State<ModerationScreen> {
 }
 
 class _StatusCard extends StatelessWidget {
-  const _StatusCard({required this.ready, this.error, required this.labels});
+  const _StatusCard({
+    required this.ready,
+    required this.monitoring,
+    this.error,
+    required this.labels,
+  });
 
   final bool ready;
+  final bool monitoring;
   final String? error;
   final List<String> labels;
 
@@ -124,12 +170,18 @@ class _StatusCard extends StatelessWidget {
     if (error != null) {
       icon = Icons.error_outline;
       color = const Color(0xFFB91C1C);
-      title = 'Model failed to load';
+      title = 'Something went wrong';
       subtitle = error!;
-    } else if (ready) {
-      icon = Icons.verified_user;
+    } else if (monitoring) {
+      icon = Icons.shield;
       color = const Color(0xFF15803D);
-      title = 'Protection ready';
+      title = 'Protection active';
+      subtitle = 'Sampling the screen every '
+          '${ModerationConfig.sampleInterval.inSeconds}s';
+    } else if (ready) {
+      icon = Icons.verified_user_outlined;
+      color = const Color(0xFF2563EB);
+      title = 'Ready';
       subtitle = 'Classes: ${labels.join(", ")}';
     } else {
       icon = Icons.hourglass_top;
@@ -140,8 +192,7 @@ class _StatusCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Icon(icon, color: color, size: 36),
-        title: Text(title,
-            style: const TextStyle(fontWeight: FontWeight.w700)),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
         subtitle: Text(subtitle),
       ),
     );
