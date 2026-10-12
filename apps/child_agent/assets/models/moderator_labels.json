@@ -1,0 +1,9 @@
+{
+  "classes": [
+    "safe",
+    "unsafe"
+  ],
+  "num_classes": 2,
+  "image_size": 128,
+  "input_scaling": "0-1"
+}
