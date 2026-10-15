@@ -5,6 +5,7 @@ import 'models.dart';
 import 'screens/alerts_screen.dart';
 import 'screens/alert_detail_screen.dart';
 import 'screens/app_detail_screen.dart';
+import 'screens/child_profiles_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/devices_screen.dart';
 import 'screens/forgot_password_screen.dart';
@@ -57,6 +58,7 @@ class AppRoot extends StatefulWidget {
 }
 
 enum _Screen {
+  childProfiles,
   welcome,
   login,
   signup,
@@ -151,6 +153,11 @@ class _AppRootState extends State<AppRoot> {
 
   Widget _buildScreen() {
     switch (_screen) {
+      case _Screen.childProfiles:
+        return ChildProfilesScreen(
+          onBack: () => _go(_Screen.dashboard),
+        );
+
       case _Screen.welcome:
         return WelcomeScreen(
           onGetStarted: () => _go(_Screen.signup),
