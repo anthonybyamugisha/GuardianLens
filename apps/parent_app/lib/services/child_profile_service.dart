@@ -13,16 +13,15 @@ class ChildProfileServiceException implements Exception {
 }
 
 class ChildProfileService {
-  ChildProfileService({http.Client? client, String? token})
-      : _client = client ?? http.Client(),
-        _token = token;
+  ChildProfileService({http.Client? client, this._token})
+      : _client = client ?? http.Client();
 
   final http.Client _client;
   final String? _token;
 
   Map<String, String> get _headers => {
         'Content-Type': 'application/json',
-        if (_token != null && _token!.isNotEmpty)
+        if (_token != null && _token.isNotEmpty)
           'Authorization': 'Bearer $_token',
       };
 
