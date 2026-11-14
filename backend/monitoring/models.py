@@ -1,7 +1,11 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from devices.models import Device
+
+MIN_SAMPLE_INTERVAL = 5
+MAX_SAMPLE_INTERVAL = 10
 
 
 class MonitoringRule(models.Model):
@@ -24,7 +28,10 @@ class MonitoringRule(models.Model):
     )
     sample_interval_seconds = models.PositiveSmallIntegerField(
         default=7,
-        validators=[MinValueValidator(5), MaxValueValidator(10)],
+        validators=[
+            MinValueValidator(MIN_SAMPLE_INTERVAL),
+            MaxValueValidator(MAX_SAMPLE_INTERVAL),
+        ],
     )
     monitored_packages = models.JSONField(default=list, blank=True)
     version = models.PositiveIntegerField(default=1)
@@ -37,3 +44,35 @@ class MonitoringRule(models.Model):
 
     def __str__(self):
         return f"Rule for {self.device}"
+
+    def clean(self):
+        super().clean()
+        if not (
+            MIN_SAMPLE_INTERVAL
+            <= self.sample_interval_seconds
+            <= MAX_SAMPLE_INTERVAL
+        ):
+            raise ValidationError(
+                {
+                    "sample_interval_seconds": (
+                        "Sampling interval must be between "
+                        f"{MIN_SAMPLE_INTERVAL} and {MAX_SAMPLE_INTERVAL} seconds."
+                    )
+                }
+            )
+
+        if not isinstance(self.monitored_packages, list):
+            raise ValidationError(
+                {"monitored_packages": "Monitored packages must be a list."}
+            )
+
+        cleaned = []
+        for package in self.monitored_packages:
+            if not isinstance(package, str):
+                raise ValidationError(
+                    {"monitored_packages": "Each package must be a string."}
+                )
+            package = package.strip()
+            if package and package not in cleaned:
+                cleaned.append(package)
+        self.monitored_packages = cleaned
