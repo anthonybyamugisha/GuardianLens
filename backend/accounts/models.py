@@ -29,3 +29,13 @@ class Family(models.Model):
 
     def __str__(self):
         return self.name or f"{self.owner} family"
+
+    @property
+    def display_name(self):
+        return self.name or f"{self.owner} family"
+
+    @classmethod
+    def for_user(cls, user):
+        """Return the user's family, creating it on first use."""
+        family, _ = cls.objects.get_or_create(owner=user)
+        return family
