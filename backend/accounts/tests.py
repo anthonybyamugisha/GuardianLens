@@ -1,7 +1,39 @@
+from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from accounts.models import User
+from accounts.models import Family, User
+
+
+class FamilyTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="parent@example.com",
+            email="parent@example.com",
+            password="passw0rd123",
+        )
+
+    def test_for_user_creates_one_family_per_parent(self):
+        family = Family.for_user(self.user)
+        again = Family.for_user(self.user)
+
+        self.assertEqual(family.pk, again.pk)
+        self.assertEqual(Family.objects.count(), 1)
+        self.assertEqual(family.owner, self.user)
+
+    def test_display_name_falls_back_to_owner(self):
+        family = Family.for_user(self.user)
+
+        self.assertEqual(family.display_name, f"{self.user} family")
+        family.name = "The Byamugishas"
+        family.save(update_fields=["name", "updated_at"])
+        self.assertEqual(family.display_name, "The Byamugishas")
+
+    def test_deleting_owner_deletes_family(self):
+        family = Family.for_user(self.user)
+        self.user.delete()
+
+        self.assertFalse(Family.objects.filter(pk=family.pk).exists())
 
 
 class RegisterTests(APITestCase):
