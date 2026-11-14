@@ -43,3 +43,33 @@ class PairingCode(models.Model):
             expires_at=timezone.now() + ttl,
         )
         return record, code
+
+    @property
+    def is_expired(self):
+        return self.expires_at <= timezone.now()
+
+    @property
+    def is_used(self):
+        return self.used_at is not None
+
+    @property
+    def is_revoked(self):
+        return self.revoked_at is not None
+
+    @property
+    def is_usable(self):
+        return not (self.is_expired or self.is_used or self.is_revoked)
+
+    def redeem(self, device):
+        """Mark the code as used by a device. Codes are single-use."""
+        if not self.is_usable:
+            raise ValueError("Pairing code is not usable.")
+
+        self.used_at = timezone.now()
+        self.redeemed_by = device
+        self.save(update_fields=["used_at", "redeemed_by"])
+        return self
+
+    def revoke(self):
+        self.revoked_at = timezone.now()
+        self.save(update_fields=["revoked_at"])
