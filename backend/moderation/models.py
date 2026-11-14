@@ -7,6 +7,19 @@ from django.utils import timezone
 from devices.models import Device
 
 
+class ModerationEventQuerySet(models.QuerySet):
+    """Events scoped to a device or the family that owns it."""
+
+    def for_device(self, device):
+        return self.filter(device=device)
+
+    def for_family(self, family):
+        return self.filter(device__family=family)
+
+    def high_risk(self):
+        return self.filter(risk_level=ModerationEvent.RiskLevel.HIGH)
+
+
 class ModerationEvent(models.Model):
     """Minimal metadata for one moderation decision on a device."""
 
@@ -53,6 +66,8 @@ class ModerationEvent(models.Model):
     warning_shown = models.BooleanField(default=True)
     details = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = ModerationEventQuerySet.as_manager()
 
     class Meta:
         ordering = ["-occurred_at", "-id"]
