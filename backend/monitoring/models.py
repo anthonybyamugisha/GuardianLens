@@ -76,3 +76,22 @@ class MonitoringRule(models.Model):
             if package and package not in cleaned:
                 cleaned.append(package)
         self.monitored_packages = cleaned
+
+    @property
+    def needs_acknowledgement(self):
+        return self.acknowledged_version < self.version
+
+    def bump_version(self):
+        """Record a configuration change the child must acknowledge."""
+        self.version += 1
+        self.save(update_fields=["version", "updated_at"])
+        return self.version
+
+    def acknowledge(self, version=None):
+        """Store the configuration version the child has applied."""
+        target = self.version if version is None else min(version, self.version)
+        if target <= self.acknowledged_version:
+            return self.acknowledged_version
+        self.acknowledged_version = target
+        self.save(update_fields=["acknowledged_version", "updated_at"])
+        return target
