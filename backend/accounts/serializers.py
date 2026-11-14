@@ -1,7 +1,8 @@
 from django.contrib.auth.password_validation import validate_password
+from django.db import transaction
 from rest_framework import serializers
 
-from accounts.models import User
+from accounts.models import Family, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -43,14 +44,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password")
         name = validated_data.pop("name")
         email = validated_data["email"]
-        user = User(
-            username=email,
-            email=email,
-            first_name=name,
-            phone_number=validated_data.get("phone_number", ""),
-        )
-        user.set_password(password)
-        user.save()
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+                first_name=name,
+                phone_number=validated_data.get("phone_number", ""),
+            )
+            Family.for_user(user)
         return user
 
 
