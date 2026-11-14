@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/', include('pairing.urls')),
     path('api/', include('devices.urls')),
     path('api/', include('monitoring.urls')),
+    path('api/', include('moderation.urls')),
 ]
