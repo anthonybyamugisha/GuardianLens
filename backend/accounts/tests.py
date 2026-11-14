@@ -103,6 +103,21 @@ class RegisterTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_register_creates_a_family(self):
+        self.client.post(
+            "/api/auth/register/",
+            {
+                "name": "Joshua",
+                "email": "joshua@example.com",
+                "password": "passw0rd123",
+                "password2": "passw0rd123",
+            },
+            format="json",
+        )
+
+        user = User.objects.get(email="joshua@example.com")
+        self.assertTrue(Family.objects.filter(owner=user).exists())
+
 
 class LoginTests(APITestCase):
     def setUp(self):
@@ -164,6 +179,15 @@ class MeTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["email"], "joshua@example.com")
         self.assertEqual(response.data["name"], "Joshua")
+
+    def test_me_returns_the_family(self):
+        self.client.force_authenticate(self.user)
+        response = self.client.get("/api/auth/me/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["family"]["id"],
+            Family.for_user(self.user).id,
+        )
 
     def test_me_updates_profile(self):
         self.client.force_authenticate(self.user)
