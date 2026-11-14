@@ -6,6 +6,20 @@ from devices.models import Device
 from pairing.codes import CODE_TTL, generate_code, hash_code
 
 
+class PairingCodeQuerySet(models.QuerySet):
+    def usable(self, now=None):
+        now = now or timezone.now()
+        return self.filter(
+            used_at__isnull=True,
+            revoked_at__isnull=True,
+            expires_at__gt=now,
+        )
+
+    def expired(self, now=None):
+        now = now or timezone.now()
+        return self.filter(expires_at__lte=now)
+
+
 class PairingCode(models.Model):
     """A short-lived, single-use code that pairs a child device."""
 
@@ -26,6 +40,8 @@ class PairingCode(models.Model):
         related_name="redeemed_codes",
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = PairingCodeQuerySet.as_manager()
 
     class Meta:
         ordering = ["-created_at"]
