@@ -173,6 +173,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "config.pagination.StandardResultsSetPagination",
+    "PAGE_SIZE": 25,
 }
 
 # Development toggle: set DISABLE_AUTH=1 (e.g. in backend/.env) to bypass
