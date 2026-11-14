@@ -5,6 +5,19 @@ from django.db import models
 from accounts.models import Family
 
 
+class DeviceQuerySet(models.QuerySet):
+    """Querysets scoped to a family and pairing state."""
+
+    def active(self):
+        return self.filter(is_revoked=False)
+
+    def for_family(self, family):
+        return self.filter(family=family)
+
+    def monitoring(self):
+        return self.active().filter(monitoring_enabled=True)
+
+
 class Device(models.Model):
     """A child device paired to a family."""
 
@@ -34,6 +47,8 @@ class Device(models.Model):
     is_revoked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = DeviceQuerySet.as_manager()
 
     class Meta:
         ordering = ["name", "id"]
