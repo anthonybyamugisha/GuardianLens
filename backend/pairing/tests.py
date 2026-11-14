@@ -2,8 +2,11 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
+from rest_framework import status
+from rest_framework.test import APITestCase
 
 from accounts.models import Family, User
+from devices.credentials import parse_credential
 from devices.models import Device
 from pairing.codes import generate_code, hash_code, normalize_code
 from pairing.models import PairingCode
@@ -101,3 +104,101 @@ class PairingCodeModelTests(TestCase):
         self.assertEqual(deleted, 1)
         self.assertFalse(PairingCode.objects.filter(pk=expired.pk).exists())
         self.assertTrue(PairingCode.objects.filter(pk=usable.pk).exists())
+
+
+class PairingAPITests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="parent@example.com",
+            email="parent@example.com",
+            password="passw0rd123",
+        )
+        self.family = Family.for_user(self.user)
+        self.client.force_authenticate(self.user)
+
+    def issue_code(self):
+        response = self.client.post("/api/pairing/codes/", {}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        return response.data
+
+    def test_parent_can_issue_a_code(self):
+        data = self.issue_code()
+
+        self.assertTrue(data["code"].startswith("GL-"))
+        self.assertEqual(PairingCode.objects.count(), 1)
+        record = PairingCode.objects.get()
+        self.assertNotEqual(record.code_hash, data["code"])
+        self.assertEqual(record.family, self.family)
+
+    def test_redeeming_a_code_pairs_a_device(self):
+        code = self.issue_code()["code"]
+
+        response = self.client.post(
+            "/api/pairing/redeem/",
+            {"code": code, "name": "Child phone"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        device = Device.objects.get()
+        self.assertEqual(device.family, self.family)
+        self.assertTrue(device.is_paired)
+        device_id, secret = parse_credential(response.data["credential"])
+        self.assertEqual(device_id, device.pk)
+        self.assertTrue(device.check_credential(secret))
+        self.assertTrue(PairingCode.objects.get().is_used)
+
+    def test_a_code_cannot_be_redeemed_twice(self):
+        code = self.issue_code()["code"]
+        payload = {"code": code, "name": "Child phone"}
+
+        first = self.client.post("/api/pairing/redeem/", payload, format="json")
+        second = self.client.post("/api/pairing/redeem/", payload, format="json")
+
+        self.assertEqual(first.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(second.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Device.objects.count(), 1)
+
+    def test_expired_code_is_rejected(self):
+        code = self.issue_code()["code"]
+        record = PairingCode.objects.get()
+        record.expires_at = timezone.now() - timedelta(seconds=1)
+        record.save(update_fields=["expires_at"])
+
+        response = self.client.post(
+            "/api/pairing/redeem/",
+            {"code": code, "name": "Child phone"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(Device.objects.exists())
+
+    def test_unknown_code_is_rejected(self):
+        response = self.client.post(
+            "/api/pairing/redeem/",
+            {"code": "GL-AAAA-AAAA", "name": "Child phone"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(Device.objects.exists())
+
+    def test_redeemed_device_belongs_to_the_codes_family_only(self):
+        other = User.objects.create_user(
+            username="other@example.com",
+            email="other@example.com",
+            password="passw0rd123",
+        )
+        other_family = Family.for_user(other)
+        code = self.issue_code()["code"]
+
+        self.client.force_authenticate(other)
+        self.client.post(
+            "/api/pairing/redeem/",
+            {"code": code, "name": "Child phone"},
+            format="json",
+        )
+
+        self.assertFalse(Device.objects.filter(family=other_family).exists())
+        self.assertTrue(Device.objects.filter(family=self.family).exists())
