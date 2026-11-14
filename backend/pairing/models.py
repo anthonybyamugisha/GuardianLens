@@ -89,3 +89,8 @@ class PairingCode(models.Model):
     def revoke(self):
         self.revoked_at = timezone.now()
         self.save(update_fields=["revoked_at"])
+
+    @classmethod
+    def delete_expired(cls, now=None):
+        """Delete codes that can no longer be redeemed."""
+        return cls.objects.expired(now).delete()

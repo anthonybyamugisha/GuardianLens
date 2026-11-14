@@ -89,3 +89,15 @@ class PairingCodeModelTests(TestCase):
         self.assertTrue(record.is_revoked)
         with self.assertRaises(ValueError):
             record.redeem(self.device)
+
+    def test_delete_expired_removes_only_expired_codes(self):
+        expired, _ = PairingCode.issue(self.family)
+        expired.expires_at = timezone.now() - timedelta(seconds=1)
+        expired.save(update_fields=["expires_at"])
+        usable, _ = PairingCode.issue(self.family)
+
+        deleted, _ = PairingCode.delete_expired()
+
+        self.assertEqual(deleted, 1)
+        self.assertFalse(PairingCode.objects.filter(pk=expired.pk).exists())
+        self.assertTrue(PairingCode.objects.filter(pk=usable.pk).exists())
