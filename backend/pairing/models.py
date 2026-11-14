@@ -1,7 +1,9 @@
 from django.db import models
+from django.utils import timezone
 
 from accounts.models import Family
 from devices.models import Device
+from pairing.codes import CODE_TTL, generate_code, hash_code
 
 
 class PairingCode(models.Model):
@@ -30,3 +32,14 @@ class PairingCode(models.Model):
 
     def __str__(self):
         return f"Pairing code for family {self.family_id}"
+
+    @classmethod
+    def issue(cls, family, ttl=CODE_TTL):
+        """Create a pairing code and return it with its plaintext value."""
+        code = generate_code()
+        record = cls.objects.create(
+            family=family,
+            code_hash=hash_code(code),
+            expires_at=timezone.now() + ttl,
+        )
+        return record, code
