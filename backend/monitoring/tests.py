@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APITestCase
 
 from accounts.models import Family, User
 from devices.models import Device
@@ -74,3 +76,99 @@ class MonitoringRuleModelTests(TestCase):
 
         self.assertEqual(self.rule.acknowledged_version, self.rule.version)
         self.assertFalse(self.rule.needs_acknowledgement)
+
+
+class MonitoringRuleAPITests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="parent@example.com",
+            email="parent@example.com",
+            password="passw0rd123",
+        )
+        self.family = Family.for_user(self.user)
+        self.device = Device.objects.create(family=self.family, name="Child phone")
+        self.secret = self.device.issue_credential()
+        self.device.mark_paired()
+        self.credential = f"Device {self.device.pk}.{self.secret}"
+
+    def as_child(self):
+        return self.client.credentials(HTTP_AUTHORIZATION=self.credential)
+
+    def test_child_can_read_its_rule(self):
+        self.as_child()
+        response = self.client.get("/api/device/rule/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["sensitivity"],
+            MonitoringRule.Sensitivity.STANDARD,
+        )
+        self.assertEqual(response.data["version"], 1)
+
+    def test_child_can_acknowledge_a_version(self):
+        self.as_child()
+        response = self.client.post(
+            "/api/device/rule/ack/",
+            {"version": 1},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["acknowledged_version"], 1)
+        self.assertFalse(response.data["needs_acknowledgement"])
+
+    def test_child_requires_a_credential(self):
+        response = self.client.get("/api/device/rule/")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_revoked_device_cannot_read_its_rule(self):
+        self.as_child()
+        self.device.revoke()
+
+        response = self.client.get("/api/device/rule/")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_parent_can_read_and_update_the_rule(self):
+        self.client.force_authenticate(self.user)
+        url = f"/api/devices/{self.device.pk}/rule/"
+
+        response = self.client.patch(
+            url,
+            {
+                "sensitivity": MonitoringRule.Sensitivity.STRICT,
+                "sample_interval_seconds": 5,
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["version"], 2)
+        self.assertEqual(response.data["sensitivity"], "strict")
+
+    def test_parent_update_rejects_invalid_interval(self):
+        self.client.force_authenticate(self.user)
+        response = self.client.patch(
+            f"/api/devices/{self.device.pk}/rule/",
+            {"sample_interval_seconds": 30},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_rule_is_scoped_to_the_parents_family(self):
+        other = User.objects.create_user(
+            username="other@example.com",
+            email="other@example.com",
+            password="passw0rd123",
+        )
+        other_device = Device.objects.create(
+            family=Family.for_user(other),
+            name="Other phone",
+        )
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(f"/api/devices/{other_device.pk}/rule/")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
