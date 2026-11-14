@@ -5,16 +5,30 @@ from rest_framework import serializers
 from accounts.models import Family, User
 
 
+class FamilySerializer(serializers.ModelSerializer):
+    display_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Family
+        fields = ["id", "name", "display_name", "created_at"]
+        read_only_fields = fields
+
+
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="first_name", max_length=150, required=False, allow_blank=True)
+    family = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["id", "username", "name", "email", "phone_number", "date_joined"]
-        read_only_fields = ["id", "username", "date_joined"]
+        fields = ["id", "username", "name", "email", "phone_number", "family", "date_joined"]
+        read_only_fields = ["id", "username", "family", "date_joined"]
 
     def validate_email(self, value):
         return value.strip().lower()
+
+    def get_family(self, obj):
+        family = Family.for_user(obj)
+        return FamilySerializer(family, context=self.context).data
 
 
 class RegisterSerializer(serializers.ModelSerializer):
