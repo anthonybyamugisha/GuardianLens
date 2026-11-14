@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 
 from accounts.models import Family
+from devices.credentials import compare_secret, generate_secret, hash_secret
 
 
 class DeviceQuerySet(models.QuerySet):
@@ -81,3 +82,18 @@ class Device(models.Model):
                 "updated_at",
             ]
         )
+
+    def issue_credential(self):
+        """Store a new secret and return its plaintext value once."""
+        secret = generate_secret()
+        self.credential_hash = hash_secret(secret)
+        self.save(update_fields=["credential_hash", "updated_at"])
+        return secret
+
+    def check_credential(self, secret):
+        """Return whether a secret matches the stored digest."""
+        return compare_secret(secret, self.credential_hash)
+
+    @property
+    def is_paired(self):
+        return self.paired_at is not None and not self.is_revoked
