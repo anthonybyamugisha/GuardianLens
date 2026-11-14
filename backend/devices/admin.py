@@ -13,7 +13,7 @@ class DeviceAdmin(admin.ModelAdmin):
         "is_revoked",
         "last_seen_at",
     )
-    list_filter = ("platform", "monitoring_enabled", "is_revoked")
+    list_filter = ("platform", "monitoring_enabled", "is_revoked", "family")
     search_fields = ("name", "family__name", "family__owner__email")
     readonly_fields = (
         "installation_id",
