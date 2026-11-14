@@ -59,3 +59,33 @@ class PairingCodeModelTests(TestCase):
         self.assertFalse(used.is_usable)
         self.assertFalse(revoked.is_usable)
         self.assertEqual(list(PairingCode.objects.usable()), [])
+
+    def test_redeem_marks_the_code_used(self):
+        record, _ = PairingCode.issue(self.family)
+
+        record.redeem(self.device)
+        record.refresh_from_db()
+
+        self.assertTrue(record.is_used)
+        self.assertEqual(record.redeemed_by, self.device)
+        self.assertFalse(record.is_usable)
+        self.assertNotIn(record, PairingCode.objects.usable())
+
+    def test_a_code_can_only_be_redeemed_once(self):
+        record, _ = PairingCode.issue(self.family)
+        other = Device.objects.create(family=self.family, name="Other phone")
+        record.redeem(self.device)
+
+        with self.assertRaises(ValueError):
+            record.redeem(other)
+
+        record.refresh_from_db()
+        self.assertEqual(record.redeemed_by, self.device)
+
+    def test_revoked_code_cannot_be_redeemed(self):
+        record, _ = PairingCode.issue(self.family)
+        record.revoke()
+
+        self.assertTrue(record.is_revoked)
+        with self.assertRaises(ValueError):
+            record.redeem(self.device)
