@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils import timezone
 
 from accounts.models import Family
 
@@ -58,3 +59,25 @@ class Device(models.Model):
 
     def __str__(self):
         return self.name
+
+    def mark_paired(self, when=None):
+        self.paired_at = when or timezone.now()
+        self.save(update_fields=["paired_at", "updated_at"])
+
+    def mark_seen(self, when=None):
+        self.last_seen_at = when or timezone.now()
+        self.save(update_fields=["last_seen_at", "updated_at"])
+
+    def revoke(self):
+        """Revoke the device and clear its stored credential."""
+        self.is_revoked = True
+        self.monitoring_enabled = False
+        self.credential_hash = ""
+        self.save(
+            update_fields=[
+                "is_revoked",
+                "monitoring_enabled",
+                "credential_hash",
+                "updated_at",
+            ]
+        )
